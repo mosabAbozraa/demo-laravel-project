@@ -29,4 +29,8 @@ class UserController extends Controller
     public function loginNormalUser(Request $request){
 
     }
+
+    public function loginAdminUser(Request $request){
+
+    }
 }
