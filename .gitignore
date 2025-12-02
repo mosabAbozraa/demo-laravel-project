@@ -1,3 +1,4 @@
+# Backend ignores
 backend/*.log
 backend/.DS_Store
 backend/.env
@@ -22,3 +23,5 @@ backend/vendor
 backend/Homestead.json
 backend/Homestead.yaml
 backend/Thumbs.db
+
+# Frontend ignores
