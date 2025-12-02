@@ -25,4 +25,8 @@ class UserController extends Controller
     public function login(Request $request){
 
     }
+
+    public function loginNormalUser(Request $request){
+
+    }
 }
