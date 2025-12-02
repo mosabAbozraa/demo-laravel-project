@@ -23,11 +23,11 @@ class UserController extends Controller
     }
 
     public function login(Request $request){
-        
+
     }
 
     public function loginAdminUser(Request $request){
 
-        echo "admin login";
+        echo "admin";
     }
 }
