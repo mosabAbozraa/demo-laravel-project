@@ -31,6 +31,6 @@ class UserController extends Controller
     }
 
     public function loginAdminUser(Request $request){
-
+        echo "admin login";
     }
 }
