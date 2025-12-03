@@ -29,12 +29,12 @@ class RegisterRequest extends FormRequest
             'phone'             => 'required|string|unique:users,phone',
             'password' => [
             'required',
-            'string',
-            Password::min(8)
-                ->letters()
-                ->mixedCase()
-                ->numbers()
-                ->symbols(),
+            'string'
+            // Password::min(8)
+            //     ->letters()
+            //     ->mixedCase()
+            //     ->numbers()
+            //     ->symbols(),
             // 'confirmed'
         ],
             'avatar'    => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
