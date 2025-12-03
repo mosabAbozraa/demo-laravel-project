@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
 class UserController extends Controller
 {
     public function register(RegisterRequest $request){
@@ -24,7 +24,17 @@ class UserController extends Controller
         return response()->json($user,201);
     }
 
-    public function login(Request $request){
+    public function login(LoginRequest $request){
+        if(!Auth::attempt($request->only('phone','password'))){
+            return response()->json(['message'=>'wrong phone number or password'],401);
+        }
+        $user = User::where('phone',$request->phone)->first();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'message' => 'login successful',
+            'access_token' => $token,
+            'user' => $user
+        ],200);
 
     }
 }
