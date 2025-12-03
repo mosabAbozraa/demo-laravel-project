@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('phone')->unique();
             $table->string('password');
-            // photo
-            // Id photo 
+            $table->string('avatar');   // personal photo
+            $table->string('id_photo'); // ID photo
             $table->date('date_of_birth');
             $table->enum('role',['tenant','owner'])->default('tenant');
             $table->enum('approval_statu',['approved','pending','rejected'])->default('pending');

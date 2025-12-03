@@ -2,35 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
 class UserController extends Controller
 {
-    public function regiter(Request $request){
-        $request->validate([
-            'phone' => 'unique:users,phone'
-        ]);
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name'  => $request->last_name,
-            'phone'      => $request->phone,
-            'password'   => Hash::make($request->password),
-            'date_of_birth' => $request->date_of_birth
-        ]);
+    public function register(RegisterRequest $request){
+        $validated = $request->validated();
+        $validated['password'] = Hash::make($request->password);
+        if($request->hasFile('avatar')){
+            $path = $request->file('avatar')->store('avatars','public');
+            $validated['avatar'] = $path;
+        }
+        if($request->hasFile('id_photo')){
+            $path = $request->file('id_photo')->store('','id_photos');
+            $validated['id_photo'] = $path;
+        }   
+        $user = User::create($validated);
         return response()->json($user,201);
     }
 
-    public function login(Request $request){
-
+    public function login(LoginRequest $request){
+        if(!Auth::attempt($request->only('phone','password'))){
+            return response()->json(['message'=>'wrong phone number or password'],401);
+        }
+        $user = User::where('phone',$request->phone)->first();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'message' => 'login successful',
+            'access_token' => $token,
+            'user' => $user
+        ],200);
     }
 
-    public function loginNormalUser(Request $request){
-
-    }
-
-    public function loginAdminUser(Request $request){
-        echo "admin login";
-    }
+    public function logout(){
+        auth()->user()->currentAccessToken()->delete();
+        return response()->json(['message'=>'logout successful'],200);
+}
 }

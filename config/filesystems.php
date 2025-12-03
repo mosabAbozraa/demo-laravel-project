@@ -60,6 +60,11 @@ return [
             'report' => false,
         ],
 
+        'id_photos' => [
+        'driver' => 'local',
+        'root' => storage_path('app/id_photos'), 
+        ],
+
     ],
 
     /*
