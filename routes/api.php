@@ -11,8 +11,8 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::post('user',[UserController::class,'regiter']);
-Route::post('loginUser',[UserController::class,'login']);
+Route::post('register',[UserController::class,'register']);
+Route::post('login',[UserController::class,'login']);
 
 Route::post('property',[PropertyController::class,'create_property_for_owner']);
 
