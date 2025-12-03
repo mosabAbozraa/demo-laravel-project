@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+// use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password;
 
 class RegisterRequest extends FormRequest
 {
@@ -25,14 +27,18 @@ class RegisterRequest extends FormRequest
             'first_name'        => 'required|string|max:255',
             'last_name'         => 'required|string|max:255',
             'phone'             => 'required|string|unique:users,phone',
-            'password'          => [
-                'required',
-                'string',
-                'min:8',
-                'confirmed',
-                'complexity:letters,numbers,symbols'
-            ],
-            'personal_image'    => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'password' => [
+            'required',
+            'string',
+            Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols(),
+            // 'confirmed'
+        ],
+            'avatar'    => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'id_photo'  => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'date_of_birth'     => 'required|date|date_format:Y-m-d',
         ];
     }
