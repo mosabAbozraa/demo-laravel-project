@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('password');
             // photo
+            $table->string('personal_image');
             // Id photo 
             $table->date('date_of_birth');
             $table->enum('role',['tenant','owner'])->default('tenant');
