@@ -16,10 +16,9 @@ return new class extends Migration
                 'completed',
                 'canceled'
             ])->default('pending');
-            $table->decimal('booking_price');  //*
-
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->decimal('booking_price')->nullable();  //* total price for the booking
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
 
             $table->timestamps();
        });
