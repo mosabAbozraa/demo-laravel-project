@@ -13,6 +13,6 @@ class Property extends Model
     }
 
     public function tenants(){
-        return $this->belongsToMany(User::class,'bookings');
+        return $this->belongsToMany(User::class,'bookings','property_id','tenant_id');
     }
 }
