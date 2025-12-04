@@ -44,11 +44,11 @@ class User extends Authenticatable
         ];
     }
 
-    public function properties_owner(){
-        return $this->hasMany(Property::class);
+    public function ownedProperties(){
+        return $this->hasMany(Property::class,'owner_id');
     }
 
-    public function properties_tenant(){
-        return $this->belongsToMany(Property::class,'bookings');
+    public function rentedProperties(){
+        return $this->belongsToMany(Property::class,'bookings','tenant_id','property_id');
     }
 }
