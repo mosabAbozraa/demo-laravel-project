@@ -13,11 +13,11 @@ class UserController extends Controller
         $validated = $request->validated();
         $validated['password'] = Hash::make($request->password);
         if($request->hasFile('avatar')){
-            $path = $request->file('avatar')->store('avatars','public');
+            $path = $request->file('avatar')->store('avatars','public'); // ('folder name' , 'disk' )
             $validated['avatar'] = $path;
         }
         if($request->hasFile('id_photo')){
-            $path = $request->file('id_photo')->store('','id_photos');
+            $path = $request->file('id_photo')->store('id_photos','private');
             $validated['id_photo'] = $path;
         }   
         $user = User::create($validated);
@@ -38,7 +38,7 @@ class UserController extends Controller
     }
 
     public function logout(){
-        auth()->user()->currentAccessToken()->delete();
+        // auth()->user()->currentAccessToken()->delete();
         return response()->json(['message'=>'logout successful'],200);
 }
 }
