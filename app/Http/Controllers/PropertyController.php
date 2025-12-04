@@ -39,6 +39,7 @@ class PropertyController extends Controller
         if ($user->id === $property->owner_id){
             return response()->json('you cannot book your own property',403);
         }
+        
         // maybe here we can but a validation for the dates 
         $property->update(['current_status'=>'rented']);
         $property->tenants()->attach($user->id);
