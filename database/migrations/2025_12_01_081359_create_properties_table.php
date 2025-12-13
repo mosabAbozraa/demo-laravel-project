@@ -9,11 +9,11 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
 
             //  Location 
-            $table->string('governorate');
-            $table->string('city');
+            $table->string('governorate_id');
+            $table->string('city_id');
 
             //  Price 
             $table->decimal('price_per_night');

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class City extends Model
 {
+    public $guarded = ['id'];
     public function governorate()
     {
         return $this->belongsTo(Governorate::class);

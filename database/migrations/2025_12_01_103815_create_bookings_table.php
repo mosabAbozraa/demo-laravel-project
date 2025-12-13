@@ -9,8 +9,8 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('tenant_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('property_id')->constrained('properties')->cascadeOnDelete();
+            $table->foreignId('tenant_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('property_id')->constrained('properties')->onDelete('cascade');
             $table->enum('bookings_status_check',[
                 'pending',
                 'completed',

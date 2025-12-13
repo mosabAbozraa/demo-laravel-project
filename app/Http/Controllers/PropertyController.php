@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddPropertyRequest;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -9,23 +10,33 @@ use Illuminate\Support\Facades\Auth;
 
 class PropertyController extends Controller
 {
-    public function add_property_to_owner(Request $request){
+    public function add_property_to_owner(AddPropertyRequest $request){
         $user = Auth::user();
         // if($user->role === 'tenant'){
         //     $user->update(['role'=>'owner']);
         // }
+        $validatedData = $request->validated();
+        $validatedData['owner_id'] = $user->id;
+        $property = Property::create($validatedData);
+        
+        foreach ($request->file('images') as $image){
+            $path = $image->store('property_images','public');
+            $property->images()->create([
+                'path' => $path,
+                'type' => 'image'
+            ]);
+        }
 
-        $property = Property::create([
-            'owner_id'          => $user->id,  
-            'governorate'       => $request->governorate,
-            'city'              =>$request->city,
-            'price_per_night'   =>$request->price_per_night,
-            'description'       =>$request->description,
-            'area'              => $request->area,
-            'rooms'             =>$request->rooms,
-            'bath_rooms'        =>$request->bath_rooms
-        ]);
-        return response()->json($property,201);
+        $images = $property->images()->get()->map(function ($img){
+            return asset('storage/property_images',$img->path);
+        });
+
+        return response()->json([
+            'property' => $property,
+            'images'   => $property->images()->get()->map(function ($imageUrl){
+                return asset('storage/property_images'.$imageUrl->path);
+            })
+        ],201);
     }
 
     public function booking($propertyId){
