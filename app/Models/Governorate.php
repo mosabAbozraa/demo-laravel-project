@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Governorate extends Model
 {
+    public $guarded = ['id'];
     public function cities()
     {
         return $this->hasMany(City::class);
