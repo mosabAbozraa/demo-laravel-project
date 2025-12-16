@@ -20,11 +20,11 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('phone')->unique();
             $table->string('password');
-            $table->string('avatar');   // personal photo path
-            $table->string('id_photo'); // ID photo path
-            $table->date('date_of_birth');
-            $table->enum('role',['tenant','owner'])->default('tenant');
-            $table->enum('approval_statu',['approved','pending','rejected'])->default('pending');
+            $table->string('avatar')->nullable();   // personal photo path
+            $table->string('id_photo')->nullable(); // ID photo path
+            $table->date('date_of_birth')->nullable();
+            $table->enum('role',['tenant','owner','admin'])->default('tenant');
+            $table->enum('approval_status',['approved','pending','rejected'])->default('pending');
             $table->rememberToken();
             $table->timestamps();
         });
