@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddPropertyRequest;
+use App\Http\Resources\PropertyResource;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -63,5 +64,13 @@ class PropertyController extends Controller
             'total_properties'=>$number_of_properties,
             'properties'=>Property::all()],
             200);
+    }
+
+    public function getProperty($propertyId){
+        $property = Property::with('owner')->find($propertyId);
+        if(!$property){ 
+            return response()->json('invalid id',400);
+        }        
+        return new PropertyResource($property);
     }
 }
