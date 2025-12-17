@@ -37,9 +37,9 @@ class RegisterRequest extends FormRequest
             //     ->symbols(),
             // 'confirmed'
         ],
-            'avatar'    => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // 2 MB
-            'id_photo'  => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // 2 MB
-            'date_of_birth'     => 'required|date|date_format:Y-m-d',
+            'avatar'    => 'image|mimes:jpeg,png,jpg,gif|max:2048', // 2 MB
+            'id_photo'  => 'image|mimes:jpeg,png,jpg,gif|max:2048', // 2 MB
+            'date_of_birth'     => 'date|date_format:Y-m-d',
         ];
     }
 }
