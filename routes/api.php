@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('addProperty',[PropertyController::class,'add_property_to_owner']);
     Route::post('rent/{propertyId}',[PropertyController::class,'booking']);
     Route::get('showAllProperties',[PropertyController::class,'show_all_properties']);
+    
     Route::get('showProperty/{propertyId}',[PropertyController::class,'getProperty']);
 });
 
