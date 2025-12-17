@@ -19,7 +19,8 @@ Route::post('editRole/{user_id}',[UserController::class,'editRole'])->middleware
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('addProperty',[PropertyController::class,'add_property_to_owner']);
     Route::post('rent/{propertyId}',[PropertyController::class,'booking']);
-    Route::get('showAllProperties',[PropertyController::class,'show_all_properties']);
+    Route::get('showAllProperties',[PropertyController::class,'show_all_properties']);    
+    Route::get('showProperty/{propertyId}',[PropertyController::class,'getProperty']);
     //=================================== Admin Routes ===================================
     Route::get('admin/showAllPendingUser',[UserController::class,'pendingUser'])->middleware('CheckUser');
     Route::post('admin/updateUserStatus/{user_id}',[UserController::class,'updateUserStatus'])->middleware('CheckUser');
