@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function register(RegisterRequest $request){
+public function register(RegisterRequest $request){
         $validated = $request->validated();
         $validated['password'] = Hash::make($request->password);    
         if($request->hasFile('avatar')){
@@ -27,7 +27,7 @@ class UserController extends Controller
         return response()->json($user,201);
     }
 
-    public function login(LoginRequest $request)
+public function login(LoginRequest $request)
 {
     if (!Auth::attempt($request->only('phone', 'password'))) {
         return response()->json([
@@ -37,13 +37,13 @@ class UserController extends Controller
 
     $user = User::where('phone', $request->phone)->first();
 
-    if ($user->status === 'pending') {
+    if ($user->approval_status === 'pending') {
         return response()->json([
             'message' => 'Your account is waiting for admin approval'
         ], 403);
     }
 
-    if ($user->status === 'rejected') {
+    if ($user->approval_status === 'rejected') {
         return response()->json([
             'message' => 'Your account request has been rejected'
         ], 403);
@@ -57,17 +57,31 @@ class UserController extends Controller
         'user' => $user
     ], 200);
 }
-
-    public function logout(){
-        // auth()->user()->currentAccessToken()->delete();
+public function logout(){
+        auth()->user()->currentAccessToken()->delete();
         return response()->json(['message'=>'logout successful'],200);
 }
 
+public function editRole(Request $request, $id){
+        $request->validate([
+            'role'=>'required|in:tenant,owner,admin'
+        ]);
+
+        $user = User::find($id);
+        $user->role = $request->role;
+        $user->save();
+
+        return response()->json(['message'=>'User role updated successfully'],200);
+
+}
+
+    // ============================================ Admin Functions ===================================
 
     public function pendingUser(){
         $users =User::where('approval_status','pending')->get();
         return response()->json($users,200);
     }
+
 
     public function updateUserStatus(Request $request,$id){
         $request->validate([
