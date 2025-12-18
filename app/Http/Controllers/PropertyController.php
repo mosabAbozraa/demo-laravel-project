@@ -27,11 +27,6 @@ class PropertyController extends Controller
                 'type' => 'image'
             ]);
         }
-
-        $images = $property->images()->get()->map(function ($img){
-            return asset('storage/property_images',$img->path);
-        });
-
         return response()->json([
             'property' => $property,
             'images'   => $property->images()->get()->map(function ($imageUrl){

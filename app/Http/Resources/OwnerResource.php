@@ -15,7 +15,7 @@ class OwnerResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name'          => $this->first_name . $this->last_name,
+            'name'          => $this->first_name .' '. $this->last_name,
             'phone number'  => $this->phone,
             'avatar'        => $this->avatar,
             'date of birth' => $this->date_of_birth

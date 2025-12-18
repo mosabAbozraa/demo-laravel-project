@@ -18,7 +18,6 @@ class PropertyResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            // owner 
             'governorate'       => Governorate::find($this->governorate_id)->name,
             'city'              => City::find($this->city_id)->name,
             'price per night'   => $this->price_per_night,

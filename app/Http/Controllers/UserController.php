@@ -39,7 +39,7 @@ public function login(LoginRequest $request)
 
     if ($user->approval_status === 'pending') {
         return response()->json([
-            'message' => 'Your account is waiting for admin approval'
+            'message' => 'Pending.... Your account is waiting for admin approval'
         ], 403);
     }
 
