@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddPropertyRequest;
+use App\Http\Requests\PropertyFilterSearch;
 use App\Http\Resources\PropertyResource;
+use App\Models\Governorate;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -35,24 +37,6 @@ class PropertyController extends Controller
         ],201);
     }
 
-    public function booking($propertyId){
-        $user = Auth::user();
-        
-        $property = Property::find($propertyId);
-        if(!$property){ 
-            return response()->json('invalid id',400);
-        }
-        
-        if ($user->id === $property->owner_id){
-            return response()->json('you cannot book your own property',403);
-        }
-        
-        // maybe here we can but a validation for the dates 
-        $property->update(['current_status'=>'rented']);
-        $property->tenants()->attach($user->id);
-        return response()->json('done',200);
-    }
-
     public function show_all_properties(){
         $number_of_properties = Property::count();
         return response()->json([
@@ -67,5 +51,12 @@ class PropertyController extends Controller
             return response()->json('invalid id',400);
         }        
         return new PropertyResource($property);
+    }
+
+    public function search(PropertyFilterSearch $request){
+        $filters = $request->validated();
+        $properties = Property::query()->filter($filters);
+
+        return response()->json($properties);
     }
 }
