@@ -6,6 +6,9 @@ use App\Http\Requests\AddPropertyRequest;
 use App\Http\Requests\BookingRequest;
 use App\Http\Resources\PropertyResource;
 use App\Models\Booking;
+use App\Http\Requests\PropertyFilterSearch;
+use App\Http\Resources\PropertyResource;
+use App\Models\Governorate;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -195,5 +198,12 @@ public function myBookings()
             return response()->json('invalid id',400);
         }        
         return new PropertyResource($property);
+    }
+
+    public function search(PropertyFilterSearch $request){
+        $filters = $request->validated();
+        $properties = Property::query()->filter($filters);
+
+        return response()->json($properties);
     }
 }

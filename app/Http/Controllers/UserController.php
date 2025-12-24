@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
-
 class UserController extends Controller
 {
 public function register(RegisterRequest $request){
@@ -58,7 +57,7 @@ public function login(LoginRequest $request)
     ], 200);
 }
 public function logout(){
-        auth()->user()->currentAccessToken()->delete();
+        // auth()->user()->currentAccessToken()->delete();
         return response()->json(['message'=>'logout successful'],200);
 }
 

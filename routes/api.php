@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use App\Models\Property;
 use App\Models\User;
@@ -26,6 +27,13 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('editBooking/{bookingId}',[PropertyController::class,'edit_booking']);
     Route::post('cancelBooking/{bookingId}',[PropertyController::class,'cancel_booking']);
     
+    Route::post('addProperty',[PropertyController::class,'add_property_to_owner']);  
+    Route::get('showAllProperties',[PropertyController::class,'show_all_properties']);    
+    Route::get('showProperty/{propertyId}',[PropertyController::class,'getProperty']);
+    Route::get('filterSearch',[PropertyController::class,'search']);
+    //=================================== Reservations ===================================
+    Route::post('book/{propertyId}',[ReservationController::class,'booking']);
+
     //=================================== Admin Routes ===================================
     Route::get('admin/showAllPendingUser',[UserController::class,'pendingUser'])->middleware('CheckUser');
     Route::post('admin/updateUserStatus/{user_id}',[UserController::class,'updateUserStatus'])->middleware('CheckUser');
