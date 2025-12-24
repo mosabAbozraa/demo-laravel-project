@@ -17,7 +17,16 @@ Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
 Route::post('editRole/{user_id}',[UserController::class,'editRole'])->middleware('auth:sanctum');
+Route::post('rent/{propertyId}',[PropertyController::class,'booking'])->middleware('auth:sanctum');
+
 Route::middleware('auth:sanctum')->group(function(){
+    Route::post('addProperty',[PropertyController::class,'add_property_to_owner']);
+    Route::get('showAllProperties',[PropertyController::class,'show_all_properties']);    
+    Route::get('showProperty/{propertyId}',[PropertyController::class,'getProperty']);
+
+    Route::put('editBooking/{bookingId}',[PropertyController::class,'edit_booking']);
+    Route::post('cancelBooking/{bookingId}',[PropertyController::class,'cancel_booking']);
+    
     Route::post('addProperty',[PropertyController::class,'add_property_to_owner']);  
     Route::get('showAllProperties',[PropertyController::class,'show_all_properties']);    
     Route::get('showProperty/{propertyId}',[PropertyController::class,'getProperty']);
