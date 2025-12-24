@@ -24,7 +24,7 @@ class AddPropertyRequest extends FormRequest
     public function rules(): array
     {
         return [  
-            'images'            => 'required|array',
+            'images'            => 'array',//add required here
             'images.*'          => 'image|mimes:jpg,png,jpeg|max:2048',  // 2 MB
             'governorate_id'    => 'required|integer|exists:governorates,id',
             'city_id'           => [

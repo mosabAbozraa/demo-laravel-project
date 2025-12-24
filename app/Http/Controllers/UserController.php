@@ -37,11 +37,11 @@ public function login(LoginRequest $request)
 
     $user = User::where('phone', $request->phone)->first();
 
-    if ($user->approval_status === 'pending') {
-        return response()->json([
-            'message' => 'Pending.... Your account is waiting for admin approval'
-        ], 403);
-    }
+    // if ($user->approval_status === 'pending') {
+    //     return response()->json([
+    //         'message' => 'Pending.... Your account is waiting for admin approval'
+    //     ], 403);
+    // }
 
     if ($user->approval_status === 'rejected') {
         return response()->json([
