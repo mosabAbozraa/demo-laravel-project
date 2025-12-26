@@ -28,6 +28,8 @@ return new class extends Migration
             $table->enum('current_status', ['rented', 'unrented'])->default('unrented');
 
             //  rating 
+            $table->decimal('average_rating')->default(0);
+            $table->integer('number_of_ratings')->default(0);
 
 
             $table->timestamps();
