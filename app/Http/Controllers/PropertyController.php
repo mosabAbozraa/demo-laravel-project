@@ -200,10 +200,29 @@ public function myBookings()
         return new PropertyResource($property);
     }
 
+    // =================================== Filter Search ===================================
     public function search(PropertyFilterSearch $request){
         $filters = $request->validated();
-        $properties = Property::query()->filter($filters);
+        $properties = Property::query()->filter($filters)->get();
 
         return response()->json($properties);
+    }
+
+    public function rate_property(Request $request, $propertyId){
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5'
+        ]);
+
+        $property = Property::find($propertyId);
+        if(!$property){
+            return response()->json('Property not found',404);
+        }
+        
+        $newRating = $request->rating;
+        $totalRating = ($property->average_rating+$newRating)/($property->number_of_ratings + 1);
+        $property->average_rating = $totalRating;
+        $property->number_of_ratings++;
+        $property->save();
+        return response()->json('Rating submitted successfully',201);
     }
 }

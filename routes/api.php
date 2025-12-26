@@ -16,28 +16,24 @@ Route::get('/user', function (Request $request) {
 Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
-Route::post('editRole/{user_id}',[UserController::class,'editRole'])->middleware('auth:sanctum');
-Route::post('rent/{propertyId}',[PropertyController::class,'booking'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::post('addProperty',[PropertyController::class,'add_property_to_owner']);
-    Route::get('showAllProperties',[PropertyController::class,'show_all_properties']);    
-    Route::get('showProperty/{propertyId}',[PropertyController::class,'getProperty']);
-
-    Route::put('editBooking/{bookingId}',[PropertyController::class,'edit_booking']);
-    Route::post('cancelBooking/{bookingId}',[PropertyController::class,'cancel_booking']);
+    Route::group(['prefix'=>'properties'],function(){
+        Route::post('add',[PropertyController::class,'add_property_to_owner']);  
+        Route::get('showAll',[PropertyController::class,'show_all_properties']);    
+        Route::get('showOne/{propertyId}',[PropertyController::class,'getProperty']);
+        Route::get('filterSearch',[PropertyController::class,'search']);
+        Route::post('rate/{propertyId}',[PropertyController::class,'rate_property']);
+        //=================================== Reservations ===================================
+        Route::post('book/{propertyId}',[ReservationController::class,'booking']);
+    });
     
-    Route::post('addProperty',[PropertyController::class,'add_property_to_owner']);  
-    Route::get('showAllProperties',[PropertyController::class,'show_all_properties']);    
-    Route::get('showProperty/{propertyId}',[PropertyController::class,'getProperty']);
-    Route::get('filterSearch',[PropertyController::class,'search']);
-    //=================================== Reservations ===================================
-    Route::post('book/{propertyId}',[ReservationController::class,'booking']);
-
     //=================================== Admin Routes ===================================
-    Route::get('admin/showAllPendingUser',[UserController::class,'pendingUser'])->middleware('CheckUser');
-    Route::post('admin/updateUserStatus/{user_id}',[UserController::class,'updateUserStatus'])->middleware('CheckUser');
-
+    Route::middleware('CheckUser')->group(['prefix'=>'admin'],function(){
+        Route::get('showAllPendingUser',[UserController::class,'pendingUser']);
+        Route::post('updateUserStatus/{user_id}',[UserController::class,'updateUserStatus']);
+        Route::post('editRole/{user_id}',[UserController::class,'editRole']);
+    });
 });
 
 
