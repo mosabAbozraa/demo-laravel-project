@@ -11,9 +11,10 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-public function register(RegisterRequest $request){
+    // =============================== Register Method ==================================
+    public function register(RegisterRequest $request){
         $validated = $request->validated();
-        $validated['password'] = Hash::make($request->password);    
+        $validated['password'] = Hash::make($request->password);
         if($request->hasFile('avatar')){
             $path = $request->file('avatar')->store('avatars','public'); // ('folder name' , 'disk' )
             $validated['avatar'] = $path;
@@ -21,18 +22,19 @@ public function register(RegisterRequest $request){
         if($request->hasFile('id_photo')){
             $path = $request->file('id_photo')->store('id_photos','private');
             $validated['id_photo'] = $path;
-        }   
+        }
         $user = User::create($validated);
         return response()->json($user,201);
     }
 
-public function login(LoginRequest $request)
-{
-    if (!Auth::attempt($request->only('phone', 'password'))) {
-        return response()->json([
+    // =============================== Login Method ==================================
+    public function login(LoginRequest $request)
+    {
+        if (!Auth::attempt($request->only('phone', 'password'))) {
+            return response()->json([
             'message' => 'Wrong phone number or password'
-        ], 401);
-    }
+            ], 401);
+        }
 
     $user = User::where('phone', $request->phone)->first();
 
@@ -54,14 +56,18 @@ public function login(LoginRequest $request)
         'message' => 'Login successful',
         'access_token' => $token,
         'user' => $user
-    ], 200);
-}
-public function logout(){
-        // auth()->user()->currentAccessToken()->delete();
-        return response()->json(['message'=>'logout successful'],200);
-}
+        ], 200);
+    }
 
-public function editRole(Request $request, $id){
+    // =============================== Logout Method ==================================
+    public function logout(){
+            // auth()->user()->currentAccessToken()->delete();
+            return response()->json(['message'=>'logout successful'],200);
+    }
+
+    // =============================== Admin Functions ===================================
+    // =============================== Edit Role Method ==================================
+    public function editRole(Request $request, $id){
         $request->validate([
             'role'=>'required|in:tenant,owner,admin'
         ]);
@@ -71,17 +77,15 @@ public function editRole(Request $request, $id){
         $user->save();
 
         return response()->json(['message'=>'User role updated successfully'],200);
+    }
 
-}
-
-    // ============================================ Admin Functions ===================================
-
+    // =============================== Pending Users Method ==================================
     public function pendingUser(){
         $users =User::where('approval_status','pending')->get();
         return response()->json($users,200);
     }
 
-
+    // =============================== Update User Status Method ==================================
     public function updateUserStatus(Request $request,$id){
         $request->validate([
             'approval_status'=>'required|in:approved,rejected'
