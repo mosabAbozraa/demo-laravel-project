@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 class Property extends Model
 {
     protected $guarded = ['id'];
-    
+
     public function owner(){
         return $this->belongsTo(User::class,'owner_id');
     }
@@ -22,7 +22,7 @@ class Property extends Model
         return $this->hasMany(Media::class);
     }
 
-    public function filter_search($query ,array $filters){
+    public function scopeFilter($query ,array $filters){
         if(isset($filters['governorate_id'])){
             $query->where('governorate_id', $filters['governorate_id']);
         }
@@ -41,7 +41,7 @@ class Property extends Model
         if(isset($filters['bath_rooms'])){
             $query->where('bath_rooms',$filters['bath_rooms']);
         }
-        return $query;   
+        return $query;
     }
 
 }
