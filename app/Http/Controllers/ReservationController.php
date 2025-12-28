@@ -140,7 +140,7 @@ class ReservationController extends Controller
 
         $bookings = Booking::where('tenant_id', $user->id)
             ->with(['property' => function($query) {
-                $query->select('id', 'governorate_id', 'city_id', 'price_per_night', 'rooms', 'bath_rooms', 'area');
+                $query->select('id', 'governorate_id', 'city_id', 'price_per_night', 'rooms', 'bath_rooms', 'area','average_rating');
             }])->orderBy('created_at', 'desc')->get();
 
         return response()->json([
