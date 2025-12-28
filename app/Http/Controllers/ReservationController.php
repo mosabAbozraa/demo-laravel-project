@@ -150,6 +150,8 @@ class ReservationController extends Controller
     }    
 
     // =============================== Owner Management Method ==================================
+
+    // ================================Booking Requests Method================================================
     public function booking_requests()
     {
      $user = Auth::user();   
