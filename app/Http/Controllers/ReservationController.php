@@ -11,9 +11,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use function Symfony\Component\Clock\now;
+use App\Models\User;
 
 class ReservationController extends Controller
 {
+
     // =============================== Booking Method ==================================
     public function booking(BookingRequest $request, $propertyId){
         $user = Auth::user();
@@ -44,7 +46,7 @@ class ReservationController extends Controller
             'booking_price' => $total_price,
             'start_date' => $validateData['start_date'],
             'end_date' => $validateData['end_date'],
-            'bookings_status_check' => 'pending_owner_approval'
+            'bookings_status_check' => 'pending'
         ]);
         return response()->json([
             'booking'=>$booking,
@@ -52,9 +54,6 @@ class ReservationController extends Controller
         ],201);
 
 
-        // $property->update(['current_status'=>'rented']);
-        // $property->tenants()->attach($user->id);
-        // return response()->json('done',200);
     }
 
 
@@ -81,7 +80,7 @@ class ReservationController extends Controller
     
         $hasConflict = Booking::where('property_id', $booking->property_id)
             ->where('id', '!=', $booking->id) //  هون عم نتحقق انه ما يقارن مع نفس الحجز 
-            ->whereIn('bookings_status_check', ['pending_owner_approval', 'completed'])
+            ->whereIn('bookings_status_check', ['pending', 'completed'])
             ->where(function ($query) use ($validatedData) {
                 $query->where('start_date', '<', $validatedData['end_date'])
                     ->where('end_date', '>', $validatedData['start_date']);
@@ -100,7 +99,7 @@ class ReservationController extends Controller
             'start_date'            => $validatedData['start_date'],
             'end_date'              => $validatedData['end_date'],
             'booking_price'         => $newTotalPrice,
-            'bookings_status_check' => 'pending_owner_approval' 
+            'bookings_status_check' => 'pending' 
         ]);
 
         return response()->json([
@@ -149,4 +148,58 @@ class ReservationController extends Controller
             'bookings' => $bookings
         ], 200);
     }    
+
+    // =============================== Owner Management Method ==================================
+
+    // ================================Booking Requests Method================================================
+    public function booking_requests()
+    {
+     $user = Auth::user();   
+     $bookings = Booking::whereHas('property', function ($query) use ($user) {
+        $query->where('owner_id', $user->id);
+     })
+        ->with(['tenant:id,first_name,phone', 'property:id,governorate_id,city_id,price_per_night,rooms,bath_rooms,area']) 
+     ->orderBy('created_at', 'desc') 
+     ->get();
+
+         return response()->json([
+        'count' => $bookings->count(),
+        'bookings' => $bookings
+     ], 200);
+    }
+
+    // =============================== Update Booking Request Status Method ==================================
+    public function update_booking_status(Request $request, $bookingId)
+    {
+        $user = Auth::user();
+        $request->validate([
+            'bookings_status_check' => 'required|in:completed,canceled'
+        ]);
+
+        $booking = Booking::find($bookingId);
+
+        if (!$booking) {
+            return response()->json(['message' => 'Booking not found'], 404);
+        }
+
+        $property = $booking->property;
+        if ($property->owner_id !== $user->id) {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
+
+        if ($booking->bookings_status_check !== 'pending') {// التحقق  اذا كان المالك نازل يجدبها لما لا
+            return response()->json(['message' => 'Only pending bookings can be updated ,صاحيلك لاتجدبها'], 400);
+        }
+
+        $booking->update([
+            'bookings_status_check' => $request->bookings_status_check
+        ]);
+
+        //لك مصعب كأن مالها داعي يكون للعقار حالة لان انا من الخرج عرفت انه الو حالة مالنا مستخدمينها ابدا 
+        $property->update([
+            'current_status' => $request->bookings_status_check === 'completed' ? 'rented' : 'unrented'
+        ]);
+
+        return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);
+    }
 }
