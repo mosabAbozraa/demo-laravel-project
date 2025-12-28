@@ -17,7 +17,7 @@ class Property extends Model
     public function tenants(){
         return $this->belongsToMany(User::class,'bookings','property_id','tenant_id');
     }
-
+ 
     public function images(){
         return $this->hasMany(Media::class);
     }

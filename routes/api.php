@@ -37,4 +37,14 @@ Route::middleware('auth:sanctum')->group(function(){
             Route::post('editRole/{user_id}',[UserController::class,'editRole']);
         });
     });
+
+    // =================================== Owner Routes ===================================
+    Route::group(['prefix'=>'owner'],function(){
+        Route::get('Dashboard',[ReservationController::class,'booking_requests']);
+        Route::put('updateRequestStatus/{booking_id}',[ReservationController::class,'update_booking_status']);
+     });
+
+
+
 });
+
