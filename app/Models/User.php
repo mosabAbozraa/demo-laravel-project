@@ -51,4 +51,8 @@ class User extends Authenticatable
     public function rentedProperties(){
         return $this->belongsToMany(Property::class,'bookings','tenant_id','property_id');
     }
+
+    public function favoriteProperties(){
+        return $this->belongsToMany(Property::class,'property_favorites','user_id','property_id');
+    }
 }
