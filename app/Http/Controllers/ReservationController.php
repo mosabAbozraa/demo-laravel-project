@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BookingRequest;
+use App\Http\Resources\MyReservationsResource;
+use App\Http\Resources\OwnerDashboardResource;
 use App\Http\Resources\PropertyResource;
 use App\Models\Booking;
 use App\Models\Property;
@@ -137,16 +139,8 @@ class ReservationController extends Controller
     public function tenant_bookings()
     {
         $user = Auth::user();
-
-        $bookings = Booking::where('tenant_id', $user->id)
-            ->with(['property' => function($query) {
-                $query->select('id', 'governorate_id', 'city_id', 'price_per_night', 'rooms', 'bath_rooms', 'area','average_rating');
-            }])->orderBy('created_at', 'desc')->get();
-
-        return response()->json([
-            'count' => $bookings->count(),
-            'bookings' => $bookings
-        ], 200);
+        $bookings = Booking::where('tenant_id', $user->id)->with('property')->get();
+        return MyReservationsResource::collection($bookings);
     }
 
     // =============================== Owner Management Method ==================================
@@ -154,18 +148,14 @@ class ReservationController extends Controller
     // ================================Booking Requests Method================================================
     public function booking_requests()
     {
-     $user = Auth::user();
-     $bookings = Booking::whereHas('property', function ($query) use ($user) {
+        $user = Auth::user();
+        $bookings = Booking::whereHas('property', function ($query) use ($user) {
         $query->where('owner_id', $user->id);
-     })
-        ->with(['tenant:id,first_name,phone', 'property:id,governorate_id,city_id,price_per_night,rooms,bath_rooms,area']) // here we should added resource for the output
-     ->orderBy('created_at', 'desc')
-     ->get();
+        })
+         // here we should added resource for the output---> لك مو تكرم عينك كم مصعب عنا لحنا 
+         ->get();
 
-         return response()->json([
-        'count' => $bookings->count(),
-        'bookings' => $bookings
-     ], 200);
+         return OwnerDashboardResource::collection($bookings);
     }
 
     // =============================== Update Booking Request Status Method ==================================
