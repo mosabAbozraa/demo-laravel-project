@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\GovernorateController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyFavoriteController;
 use App\Http\Controllers\ReservationController;
@@ -33,6 +35,12 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('editBooking/{bookingId}',[ReservationController::class,'edit_booking']);
     Route::post('cancelBooking/{bookingId}',[ReservationController::class,'cancel_booking']);
     Route::get('getTenantBookings',[ReservationController::class,'tenant_bookings']);
+
+    //=================================== Location =======================================
+    Route::group(['prefix'=>'location'],function(){
+       Route::get('governorates',[LocationController::class,'get_all_governorates']);
+       Route::get('cities/{governorateId}',[LocationController::class,'get_all_cities']);
+    });
 
     //=================================== Admin Routes ===================================
     Route::middleware('CheckUser')->group(function(){
