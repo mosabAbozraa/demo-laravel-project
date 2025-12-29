@@ -47,7 +47,6 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::group(['prefix'=>'admin'],function(){
             Route::get('showAllPendingUser',[UserController::class,'pendingUser']);
             Route::post('updateUserStatus/{user_id}',[UserController::class,'updateUserStatus']);
-            Route::post('editRole/{user_id}',[UserController::class,'editRole']);
         });
     });
 
@@ -60,3 +59,4 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 });
+Route::post('editRole/{user_id}',[UserController::class,'editRole']);
