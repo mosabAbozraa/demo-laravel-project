@@ -22,14 +22,14 @@ class ReservationController extends Controller
         $validateData = $request->validated();
 
         $property = Property::find($propertyId);
-        if(!$property){ 
+        if(!$property){
             return response()->json('invalid id',400);
         }
-        
+
         if ($user->id === $property->owner_id){
             return response()->json('you cannot book your own property',403);
         }
-        
+
         $hasConflict = Booking::where('property_id',$property->id)->whereIn('bookings_status_check',['pending','completed'])
             ->where(function($query) use ($validateData){
                 $query->where('start_date','<', $validateData['end_date'])
@@ -77,9 +77,9 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Cannot modify a completed or canceled booking'], 400);
         }
 
-    
+
         $hasConflict = Booking::where('property_id', $booking->property_id)
-            ->where('id', '!=', $booking->id) //  هون عم نتحقق انه ما يقارن مع نفس الحجز 
+            ->where('id', '!=', $booking->id) //  هون عم نتحقق انه ما يقارن مع نفس الحجز
             ->whereIn('bookings_status_check', ['pending', 'completed'])
             ->where(function ($query) use ($validatedData) {
                 $query->where('start_date', '<', $validatedData['end_date'])
@@ -91,15 +91,15 @@ class ReservationController extends Controller
             return response()->json(['message' => 'The property is already booked for the new selected dates'], 409);
         }
 
-        $property = $booking->property; 
+        $property = $booking->property;
         $days = Carbon::parse($validatedData['start_date'])->diffInDays(Carbon::parse($validatedData['end_date']));
-        $newTotalPrice = $days * $property->price_per_night;
+        $newTotalPrice = $days * $property->price_per_night; // here we should put ($days+1)
 
         $booking->update([
             'start_date'            => $validatedData['start_date'],
             'end_date'              => $validatedData['end_date'],
             'booking_price'         => $newTotalPrice,
-            'bookings_status_check' => 'pending' 
+            'bookings_status_check' => 'pending'
         ]);
 
         return response()->json([
@@ -140,26 +140,26 @@ class ReservationController extends Controller
 
         $bookings = Booking::where('tenant_id', $user->id)
             ->with(['property' => function($query) {
-                $query->select('id', 'governorate_id', 'city_id', 'price_per_night', 'rooms', 'bath_rooms', 'area'); 
+                $query->select('id', 'governorate_id', 'city_id', 'price_per_night', 'rooms', 'bath_rooms', 'area','average_rating');
             }])->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'count' => $bookings->count(),
             'bookings' => $bookings
         ], 200);
-    }    
+    }
 
     // =============================== Owner Management Method ==================================
 
     // ================================Booking Requests Method================================================
     public function booking_requests()
     {
-     $user = Auth::user();   
+     $user = Auth::user();
      $bookings = Booking::whereHas('property', function ($query) use ($user) {
         $query->where('owner_id', $user->id);
      })
-        ->with(['tenant:id,first_name,phone', 'property:id,governorate_id,city_id,price_per_night,rooms,bath_rooms,area']) 
-     ->orderBy('created_at', 'desc') 
+        ->with(['tenant:id,first_name,phone', 'property:id,governorate_id,city_id,price_per_night,rooms,bath_rooms,area']) // here we should added resource for the output
+     ->orderBy('created_at', 'desc')
      ->get();
 
          return response()->json([
@@ -195,7 +195,7 @@ class ReservationController extends Controller
             'bookings_status_check' => $request->bookings_status_check
         ]);
 
-        //لك مصعب كأن مالها داعي يكون للعقار حالة لان انا من الخرج عرفت انه الو حالة مالنا مستخدمينها ابدا 
+        //لك مصعب كأن مالها داعي يكون للعقار حالة لان انا من الخرج عرفت انه الو حالة مالنا مستخدمينها ابدا
         $property->update([
             'current_status' => $request->bookings_status_check === 'completed' ? 'rented' : 'unrented'
         ]);

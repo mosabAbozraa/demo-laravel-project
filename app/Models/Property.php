@@ -17,10 +17,16 @@ class Property extends Model
     public function tenants(){
         return $this->belongsToMany(User::class,'bookings','property_id','tenant_id');
     }
- 
+
     public function images(){
         return $this->hasMany(Media::class);
     }
+
+    public function user_favorites(){
+        return $this->belongsToMany(User::class,'property_favorites','property_id','user_id');
+    }
+
+
 
     public function scopeFilter($query ,array $filters){
         if(isset($filters['governorate_id'])){
@@ -30,10 +36,10 @@ class Property extends Model
             $query->where('city_id', $filters['city_id']);
         }
         if(isset($filters['min_price'])){
-            $query->where('price','>=',$filters['min_price']);
+            $query->where('price_per_night','>=',$filters['min_price']);
         }
         if(isset($filters['max_price'])){
-            $query->where('price','<=',$filters['max_price']);
+            $query->where('price_per_night','<=',$filters['max_price']);
         }
         if(isset($filters['rooms'])){
             $query->where('rooms',$filters['rooms']);

@@ -25,6 +25,7 @@ class PropertyResource extends JsonResource
             'area'              => $this->area,
             'rooms'             => $this->rooms,
             'bath rooms'        => $this->bath_rooms,
+            'rating'            => $this->average_rating,
             'date'              => $this->created_at->format('Y-m-d'),
             'owner information' => new OwnerResource($this->whenLoaded('owner'))
         ];
