@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\PropertyFavoriteController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -22,7 +23,11 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('showOne/{propertyId}',[PropertyController::class,'getProperty']);
         Route::get('filterSearch',[PropertyController::class,'search']);
         Route::post('rate/{propertyId}',[PropertyController::class,'rate_property']);
+        //============================== Favorites =======================================
+        Route::post('addFavorite/{propertyId}',[PropertyFavoriteController::class,'add_property_to_favorites']);
+        Route::get('showFavoritesList',[PropertyFavoriteController::class,'show_my_favorites']);
     });
+
     //=================================== Reservations ===================================
     Route::post('book/{propertyId}',[ReservationController::class,'booking']);
     Route::put('editBooking/{bookingId}',[ReservationController::class,'edit_booking']);
@@ -47,4 +52,3 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
 });
-
