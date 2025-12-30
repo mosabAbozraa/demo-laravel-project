@@ -4,10 +4,9 @@ namespace App\Http\Resources;
 
 use App\Models\City;
 use App\Models\Governorate;
-use App\Models\User;
-use Dom\Text;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class PropertyResource extends JsonResource
 {
@@ -19,9 +18,10 @@ class PropertyResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'                => $this->id,
             'governorate'       => Governorate::find($this->governorate_id)->name,
             'city'              => City::find($this->city_id)->name,
-            // 'title'             => $this->getWords($this->description),
+            'title'             => Str::words($this->description, 3, '...'),
             'price per night'   => $this->price_per_night,
             'description'       => $this->description,
             'area'              => $this->area,
@@ -34,11 +34,4 @@ class PropertyResource extends JsonResource
             'owner information' => new OwnerResource($this->whenLoaded('owner'))
         ];
     }
-
-    // public function getWords(Text $text){
-    //     $title = '';
-    //     for($i=0;$i<count($text);$i++){
-
-    //     }
-    // }
 }

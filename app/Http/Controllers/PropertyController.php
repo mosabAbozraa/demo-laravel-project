@@ -39,7 +39,7 @@ class PropertyController extends Controller
     // =============================== Show All Properties Method ==================================
     public function show_all_properties(){
         $number_of_properties = Property::count();
-        $properties = Property::with('owner'.'images')->get();
+        $properties = Property::with('owner')->get();
         return response()->json([
            'total_properties'=>$number_of_properties,
             'properties'=>PropertyResource::collection($properties)],
