@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('property_id')->constrained('properties')->onDelete('cascade');
-            $table->unique('user_id','property_id');
+            // $table->unique('user_id','property_id');
             $table->timestamps();
             // maybe we can add message with the favorite property
         });
