@@ -37,8 +37,8 @@ class RegisterRequest extends FormRequest
             //     ->symbols(),
             // 'confirmed'
         ],
-            'avatar'    => 'image|mimes:jpeg,png,jpg,gif|max:2048', // 2 MB
-            'id_photo'  => 'image|mimes:jpeg,png,jpg,gif|max:2048', // 2 MB
+            'avatar'    => 'image|mimes:jpeg,png,jpg,gif|max:5120', // 5 MB
+            'id_photo'  => 'image|mimes:jpeg,png,jpg,gif|max:5120', // 5 MB
             'date_of_birth'     => 'date|date_format:Y-m-d',
         ];
     }
