@@ -30,8 +30,8 @@ class PropertyController extends Controller
         }
         return response()->json([
             'property' => $property,
-            'images'   => $property->images()->get()->map(function ($imageUrl){
-                return asset('storage/property_images'.$imageUrl->path);
+            'images'   => $property->images()->get()->map(function ($img){
+                return asset('storage/'.$img->path);
             })
         ],201);
     }
@@ -39,9 +39,10 @@ class PropertyController extends Controller
     // =============================== Show All Properties Method ==================================
     public function show_all_properties(){
         $number_of_properties = Property::count();
+        $properties = Property::with('owner'.'images')->get();
         return response()->json([
            'total_properties'=>$number_of_properties,
-            'properties'=>Property::all()],
+            'properties'=>PropertyResource::collection($properties)],
             200);
     }
 

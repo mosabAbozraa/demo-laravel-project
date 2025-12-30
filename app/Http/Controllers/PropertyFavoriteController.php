@@ -32,7 +32,7 @@ class PropertyFavoriteController extends Controller
             ],200);
     }
 
-    //============================== show properties list ============================
+    //============================== show properties favorites list ============================
     public function show_my_favorites(){
         $user = Auth::user();
         $favoritesList = PropertyFavorite::where('user_id',$user->id)->with('favorites.owner')->orderBy('created_at','desc')->get();

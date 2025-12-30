@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\LoginResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -50,13 +51,9 @@ class UserController extends Controller
         ], 403);
     }
 
-    $token = $user->createToken('auth_token')->plainTextToken;
+    // $token = $user->createToken('auth_token')->plainTextToken;
 
-    return response()->json([
-        'message' => 'Login successful',
-        'access_token' => $token,
-        'user' => $user
-        ], 200);
+    return new LoginResource($user);
     }
 
     // =============================== Logout Method ==================================
