@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\City;
+use App\Models\Governorate;
 use App\Models\Property;
 use App\Models\User;
 use Carbon\Carbon;
@@ -21,13 +23,16 @@ class MyReservationsResource extends JsonResource
         $owner_name = User::find($property->owner_id)->first_name;
         $owner_photo = User::find($property->owner_id)->avatar;
         $owner_phone = User::find($property->owner_id)->phone;
+        $governorate_name = Governorate::find($property->governorate_id)->name;
+        $city_name = City::find($property->city_id)->name;
         return [
             'Owner Name' => $owner_name,
-            'Owner Photo' => $owner_photo,
+            'Owner Photo' => asset('storage/'.$owner_photo),
             'Owner Phone' => $owner_phone,
             'Property_Description' => $property->description,
             'Property_Rooms' => $property->rooms,
             'Property_Area' => $property->area,
+            'Location'   => $governorate_name.'/'.$city_name,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'number_of_days' => Carbon::parse($this->start_date)->diffInDays(Carbon::parse($this->end_date)),

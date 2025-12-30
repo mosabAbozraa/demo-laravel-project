@@ -149,10 +149,13 @@ class ReservationController extends Controller
     public function booking_requests()
     {
         $user = Auth::user();
+        if($user->role === 'tenant'){
+            return response()->json('you are tenant, Owners only', 403);
+        }
         $bookings = Booking::whereHas('property', function ($query) use ($user) {
         $query->where('owner_id', $user->id);
         })
-         // here we should added resource for the output---> لك مو تكرم عينك كم مصعب عنا لحنا 
+         // here we should added resource for the output---> لك مو تكرم عينك كم مصعب عنا لحنا
          ->get();
 
          return OwnerDashboardResource::collection($bookings);
