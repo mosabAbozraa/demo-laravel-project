@@ -152,7 +152,7 @@ class ReservationController extends Controller
             return response()->json(['message' => 'Property not found'], 404);
         }
 
-        $bookings = Booking::where('property_id', $propertyId)->with('tenant')->get();
+        $bookings = Booking::where('property_id', $propertyId)->whereIn('bookings_status_check',['pending','completed'])->with('tenant')->get();
 
         return DatePropertyBookingResource::collection($bookings);
     }
