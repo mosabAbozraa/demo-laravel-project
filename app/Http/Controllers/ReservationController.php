@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BookingRequest;
+use App\Http\Resources\DatePropertyBookingResource;
 use App\Http\Resources\MyReservationsResource;
 use App\Http\Resources\OwnerDashboardResource;
 use App\Http\Resources\PropertyResource;
@@ -141,6 +142,19 @@ class ReservationController extends Controller
         $user = Auth::user();
         $bookings = Booking::where('tenant_id', $user->id)->with('property')->get();
         return MyReservationsResource::collection($bookings);
+    }
+
+    public function show_all_bookings_for_one_property($propertyId)
+    {
+        $property = Property::find($propertyId);
+
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
+        }
+
+        $bookings = Booking::where('property_id', $propertyId)->with('tenant')->get();
+
+        return DatePropertyBookingResource::collection($bookings);
     }
 
     // =============================== Owner Management Method ==================================

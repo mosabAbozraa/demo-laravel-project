@@ -30,7 +30,7 @@ class PropertyResource extends JsonResource
             'rating'            => $this->average_rating,
             'date'              => $this->created_at->format('Y-m-d'),
             'images'            => $this->images()->get()->map(function ($img){
-                return asset('storage/'.$img->path);}),
+                return 'storage/'.$img->path;}),
             'owner information' => new OwnerResource($this->whenLoaded('owner'))
         ];
     }

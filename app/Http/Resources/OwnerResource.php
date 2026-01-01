@@ -17,7 +17,7 @@ class OwnerResource extends JsonResource
         return [
             'name'          => $this->first_name .' '. $this->last_name,
             'phone number'  => $this->phone,
-            'avatar'        => asset('storage/'.$this->avatar),
+            'avatar'        => $this->avatar,
         ];
     }
 }

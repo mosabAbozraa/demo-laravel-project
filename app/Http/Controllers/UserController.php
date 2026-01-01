@@ -62,36 +62,5 @@ class UserController extends Controller
             return response()->json(['message'=>'logout successful'],200);
     }
 
-    // =============================== Admin Functions ===================================
-    // =============================== Edit Role Method ==================================
-    public function editRole(Request $request, $id){
-        $request->validate([
-            'role'=>'required|in:tenant,owner,admin'
-        ]);
 
-        $user = User::find($id);
-        $user->role = $request->role;
-        $user->save();
-
-        return response()->json(['message'=>'User role updated successfully'],200);
-    }
-
-    // =============================== Pending Users Method ==================================
-    public function pendingUser(){
-        $users =User::where('approval_status','pending')->get();
-        return response()->json($users,200);
-    }
-
-    // =============================== Update User Status Method ==================================
-    public function updateUserStatus(Request $request,$id){
-        $request->validate([
-            'approval_status'=>'required|in:approved,rejected'
-        ]);
-
-        $user = User::find($id);
-        $user->approval_status = $request->approval_status;
-        $user->save();
-
-        return response()->json(['message'=>'User status updated successfully'],200);
-    }
 }

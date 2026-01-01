@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('editBooking/{bookingId}',[ReservationController::class,'edit_booking']);
     Route::post('cancelBooking/{bookingId}',[ReservationController::class,'cancel_booking']);
     Route::get('getTenantBookings',[ReservationController::class,'tenant_bookings']);
+    Route::get('showAllBookingsForOneProperty/{propertyId}',[ReservationController::class,'show_all_bookings_for_one_property']);
 
     //=================================== Location =======================================
     Route::group(['prefix'=>'location'],function(){

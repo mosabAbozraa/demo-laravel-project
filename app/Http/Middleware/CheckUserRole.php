@@ -16,9 +16,18 @@ class CheckUserRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->role !== 'admin'){
-            return response()->json(['message'=>'No Access Allowed. Admins only.'],403);
+ if (!Auth::check() || Auth::user()->role !== 'admin') {
+
+        if ($request->expectsJson()) {
+            return response()->json(
+                ['message' => 'No Access Allowed. Admins only.'],
+                403
+            );
         }
-        return $next($request);
+
+        abort(403); 
+    }
+
+    return $next($request);
     }
 }
