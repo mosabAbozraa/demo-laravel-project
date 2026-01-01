@@ -276,7 +276,7 @@
         </form>
 
         <div class="footer-link">
-            <a href="#">Forgot your password?</a>
+            <a href="#">Only Admin Can Be Access</a>
         </div>
     </div>
 
