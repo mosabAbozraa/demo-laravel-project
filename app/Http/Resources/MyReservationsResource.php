@@ -27,7 +27,7 @@ class MyReservationsResource extends JsonResource
         $city_name = City::find($property->city_id)->name;
         return [
             'Owner Name' => $owner_name,
-            'Owner Photo' => asset('storage/'.$owner_photo),
+            'Owner Photo' => 'storage/'.$owner_photo,
             'Owner Phone' => $owner_phone,
             'Property_Description' => $property->description,
             'Property_Rooms' => $property->rooms,
