@@ -31,7 +31,7 @@ class PropertyController extends Controller
         return response()->json([
             'property' => $property,
             'images'   => $property->images()->get()->map(function ($img){
-                return asset('storage/'.$img->path);
+                return 'storage/'.$img->path;
             })
         ],201);
     }
