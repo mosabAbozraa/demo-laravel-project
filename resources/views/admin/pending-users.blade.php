@@ -541,7 +541,7 @@
                                 <i class="fas fa-phone-alt"></i> {{ $user->phone }}
                             </div>
                             <div class="meta-item">
-                                <i class="far fa-calendar-alt"></i> Joined {{ $user->created_at ? $user->created_at->format('M d, Y') : 'N/A' }}
+                                <i class="far fa-calendar-alt"></i> Joined at: {{ $user->created_at ? $user->created_at->format('M d, Y') : 'N/A' }}
                             </div>
                         </div>
                     </div>
