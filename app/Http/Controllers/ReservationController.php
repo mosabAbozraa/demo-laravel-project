@@ -42,7 +42,7 @@ class ReservationController extends Controller
             return response()->json('the property is already booked for the selected dates',409);
         }
         $days = Carbon::parse($validateData['start_date'])->diffInDays(Carbon::parse($validateData['end_date']));
-        $total_price = $days * $property->price_per_night;
+        $total_price = ($days+1) * $property->price_per_night;
         $booking = Booking::create([
             'tenant_id' => $user->id,
             'property_id' => $propertyId,
