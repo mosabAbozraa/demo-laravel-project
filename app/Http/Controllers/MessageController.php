@@ -22,6 +22,7 @@ class MessageController extends Controller
             return response()->json(['message'=>'Conversation not found'], 404);
         }
 
+        //  هاد الشرط يامصعب مشان اتاكد ان المحادثة بين هل ثلاث اطراف بتحديد ولازم يكون موجود بكل توابع الرسائل
         if (!in_array($user->id, [$conv->tenant_id, $conv->owner_id])) {
             return response()->json(['message'=>'Forbidden: you are not participant of this conversation'], 403);
         }
@@ -32,7 +33,7 @@ class MessageController extends Controller
             'contents' => $data['contents'],
         ]);
 
-        $conv->touch();
+        $conv->touch();// هاد بحدث التواريخ تبع المحادثة لحتى يطلع باول القائمة
 
         return response()->json(['message' => $message], 201);
     }
