@@ -166,6 +166,9 @@
             padding: 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
         }
 
         .column-header {
@@ -227,23 +230,31 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
-            max-height: 600px;
+            min-height: 200px;
             overflow-y: auto;
-            padding-right: 5px;
+            overflow-x: hidden;
+            padding-right: 8px;
+            padding-bottom: 10px;
         }
 
         .user-cards::-webkit-scrollbar {
-            width: 6px;
+            width: 8px;
         }
 
         .user-cards::-webkit-scrollbar-track {
-            background: var(--border);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
+            margin: 5px 0;
         }
 
         .user-cards::-webkit-scrollbar-thumb {
             background: var(--primary);
             border-radius: 10px;
+            border: 2px solid var(--bg-card);
+        }
+
+        .user-cards::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
         }
 
         .user-card {
