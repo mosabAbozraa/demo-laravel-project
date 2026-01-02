@@ -8,7 +8,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+//////////////////////////////////////////////////////////////////////////
+/////              to access admin login page                         ////
+/////           http://127.0.0.1:8000/admin/login                     ////                                              
+/////                                                                 ////
+//////////////////////////////////////////////////////////////////////////
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/users/pending', [AdminUserControllaer::class, 'pendingUser'])
