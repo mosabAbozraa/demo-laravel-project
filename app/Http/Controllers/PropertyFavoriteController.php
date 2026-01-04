@@ -21,15 +21,11 @@ class PropertyFavoriteController extends Controller
         }
 
         $user = Auth::user();
-        // if ($user->id === $property->owner_id){
-        //     return response()->json('you cannot add your own property to favorites',403);
-        // }
-
-            $property->user_favorites()->attach($user->id);
-            return response()->json([
-                'message'   => 'property added to favorites',
-                'property'  => new PropertyResource($property)
-            ],200);
+        $property->user_favorites()->attach($user->id);
+        return response()->json([
+            'message'   => 'property added to favorites',
+            'property'  => new PropertyResource($property)
+        ],200);
     }
 
     //============================== show properties favorites list ============================
@@ -40,6 +36,17 @@ class PropertyFavoriteController extends Controller
             'count'     => $favoritesList->count(),
             'favorites' => FavoritesResource::collection($favoritesList)
         ], 200);
+    }
+
+    //============================== remove property from favorites ============================
+    public function remove_from_favorites($propertyId){
+        $user_id = Auth::id();
+        $favorite = PropertyFavorite::where('user_id',$user_id)->whereIn('property_id',[$propertyId]);
+        if(!$favorite){
+            return response()->json('Not found', 404);
+        }
+        $favorite->delete();
+        return response()->json('property has been removed from favorites successfully', 204);
     }
 
 }
