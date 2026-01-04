@@ -17,6 +17,7 @@ class OwnerDashboardResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'booking_id' => $this->id,
             'tenant_name' => User::find($this->tenant_id)->first_name,
             'tenant_phone' => User::find($this->tenant_id)->phone,
             'tenant_avatar' => User::find($this->tenant_id)->avatar,
