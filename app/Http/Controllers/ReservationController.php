@@ -19,6 +19,7 @@ use App\Models\User;
 class ReservationController extends Controller
 {
 
+
     // =============================== Booking Method ==================================
     public function booking(BookingRequest $request, $propertyId){
         $user = Auth::user();
@@ -142,6 +143,21 @@ class ReservationController extends Controller
         $user = Auth::user();
         $bookings = Booking::where('tenant_id', $user->id)->with('property')->get();
         return MyReservationsResource::collection($bookings);
+    }
+
+        // ============================== Show All Bookings For One Property Method ==================================
+
+    public function show_all_bookings_for_one_property($propertyId)
+    {
+        $property = Property::find($propertyId);
+
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
+        }
+
+        $bookings = Booking::where('property_id', $propertyId)->whereIn('bookings_status_check',['pending','completed'])->with('tenant')->get();
+
+        return DatePropertyBookingResource::collection($bookings);
     }
 
 

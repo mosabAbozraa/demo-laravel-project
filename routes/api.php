@@ -12,8 +12,6 @@ use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-
 Route::middleware('auth:sanctum')->group(function(){
     //=================================== Properties ===================================
 
@@ -33,6 +31,8 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('addFavorite/{propertyId}',[PropertyFavoriteController::class,'add_property_to_favorites']);
 
         Route::get('showFavoritesList',[PropertyFavoriteController::class,'show_my_favorites']);
+
+        Route::delete('removeFromFavorites/{propertyId}',[PropertyFavoriteController::class,'remove_from_favorites']);
     });
 
     //=================================== Reservations ===================================
@@ -62,7 +62,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::group(['prefix'=>'admin'],function(){
 
             Route::get('showAllPendingUser',[UserController::class,'pendingUser']);
-            
+
             Route::post('updateUserStatus/{user_id}',[UserController::class,'updateUserStatus']);
         });
     });

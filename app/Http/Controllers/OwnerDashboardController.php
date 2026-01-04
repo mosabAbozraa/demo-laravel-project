@@ -63,21 +63,6 @@ class OwnerDashboardController extends Controller
         return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);
     }
 
-    // ============================== Show All Bookings For One Property Method ==================================
-
-    public function show_all_bookings_for_one_property($propertyId)
-    {
-        $property = Property::find($propertyId);
-
-        if (!$property) {
-            return response()->json(['message' => 'Property not found'], 404);
-        }
-
-        $bookings = Booking::where('property_id', $propertyId)->whereIn('bookings_status_check',['pending','completed'])->with('tenant')->get();
-
-        return DatePropertyBookingResource::collection($bookings);
-    }
-
 
 
 }
