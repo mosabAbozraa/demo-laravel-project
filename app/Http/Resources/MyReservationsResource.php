@@ -26,6 +26,7 @@ class MyReservationsResource extends JsonResource
         $governorate_name = Governorate::find($property->governorate_id)->name;
         $city_name = City::find($property->city_id)->name;
         return [
+            'Booking_ID' => $this->id,
             'Owner Name' => $owner_name,
             'Owner Photo' => 'storage/'.$owner_photo,
             'Owner Phone' => $owner_phone,
