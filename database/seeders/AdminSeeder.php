@@ -17,8 +17,8 @@ class AdminSeeder extends Seeder
         User::updateOrCreate(
             ['phone' => env('ADMIN_PHONE')],
             [
-            'first_name' => 'Admin',
-            'last_name'  => '',
+            'first_name'    => 'Admin',
+            'last_name'     => '',
             'approval_status' => 'approved',
             'password' => Hash::make(env('ADMIN_PASSWORD')),
             'role' => 'admin',

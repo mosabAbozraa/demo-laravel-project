@@ -13,9 +13,6 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            // $table->string('email')->unique();
-            // $table->timestamp('email_verified_at')->nullable();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('phone')->unique();
@@ -24,7 +21,7 @@ return new class extends Migration
             $table->string('id_photo')->nullable(); // ID photo path
             $table->date('date_of_birth')->nullable();
             $table->enum('role',['tenant','owner','admin'])->default('tenant');
-            $table->enum('approval_status',['approved','pending','rejected'])->default('pending');
+            $table->enum('approval_status',['approved','pending'])->default('pending');
             $table->rememberToken();
             $table->timestamps();
         });

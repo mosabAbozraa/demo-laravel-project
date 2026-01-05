@@ -10,9 +10,10 @@ Route::get('/', function () {
 
 //////////////////////////////////////////////////////////////////////////
 /////              to access admin login page                         ////
-/////           http://127.0.0.1:8000/admin/login                     ////                                              
+/////           http://127.0.0.1:8000/admin/login                     ////
 /////                                                                 ////
 //////////////////////////////////////////////////////////////////////////
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     Route::get('/users/pending', [AdminUserControllaer::class, 'pendingUser'])
@@ -24,7 +25,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/users/{id}/reject', [AdminUserControllaer::class, 'rejectUser'])
         ->name('admin.users.reject');
 
-    Route::delete('/users/{id}', [AdminUserControllaer::class, 'deleteUser'])->name('admin.users.delete');
+    Route::delete('/users/{id}', [AdminUserControllaer::class, 'deleteUser'])
+        ->name('admin.users.delete');
+
+    Route::delete('rejected/users/{id}', [AdminUserControllaer::class,'deleteRejectUser'])
+        ->name('admin.rejected.users.delete');
 
     Route::get('/dashboard', function () {
     return view('admin.users.pending');

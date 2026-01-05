@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | User Management</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -532,7 +532,7 @@
 <body>
 
 <div class="dashboard-container">
-    
+
     <div class="page-header">
         <div class="page-header-content">
             <div class="page-title">
@@ -542,7 +542,7 @@
                 </h1>
             </div>
             <p class="page-subtitle">إدارة طلبات التسجيل والمستخدمين المسجلين في النظام</p>
-            
+
             <div class="stats-row">
                 <div class="stat-card">
                     <div class="stat-label">إجمالي المستخدمين</div>
@@ -558,7 +558,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">مرفوض</div>
-                    <div class="stat-value">{{ $users->where('approval_status', 'rejected')->count() }}</div>
+                    <div class="stat-value">{{ $rejected_users->count() }}</div>
                 </div>
             </div>
         </div>
@@ -572,7 +572,7 @@
     @endif
 
     <div class="kanban-board">
-        
+
         <!-- Pending Column -->
         <div class="kanban-column column-pending">
             <div class="column-header">
@@ -584,7 +584,7 @@
                 </div>
                 <span class="column-count">{{ $users->where('approval_status', 'pending')->count() }}</span>
             </div>
-            
+
             <div class="user-cards">
                 @foreach($users->where('approval_status', 'pending') as $user)
                     <div class="user-card {{ $user->role === 'admin' ? 'admin-card' : '' }}">
@@ -601,7 +601,7 @@
                                     <i class="{{ $user->role === 'admin' ? 'fas fa-crown' : 'fas fa-user' }}"></i>
                                 </div>
                             </div>
-                            
+
                             <div class="user-details">
                                 <div class="user-name">
                                     {{ $user->first_name }} {{ $user->last_name }}
@@ -617,7 +617,7 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="user-actions">
                             <form method="POST" action="{{ route('admin.users.approve', $user->id) }}" style="flex: 1;">
                                 @csrf
@@ -658,7 +658,7 @@
                 </div>
                 <span class="column-count">{{ $users->where('approval_status', 'approved')->count() }}</span>
             </div>
-            
+
             <div class="user-cards">
                 @foreach($users->where('approval_status', 'approved') as $user)
                     <div class="user-card {{ $user->role === 'admin' ? 'admin-card' : '' }}">
@@ -675,7 +675,7 @@
                                     <i class="{{ $user->role === 'admin' ? 'fas fa-crown' : 'fas fa-user' }}"></i>
                                 </div>
                             </div>
-                            
+
                             <div class="user-details">
                                 <div class="user-name">
                                     {{ $user->first_name }} {{ $user->last_name }}
@@ -691,7 +691,7 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="user-actions">
                             @if($user->role === 'admin')
                                 <span class="protected-label">
@@ -730,11 +730,11 @@
                     </div>
                     <h2>مرفوض</h2>
                 </div>
-                <span class="column-count">{{ $users->where('approval_status', 'rejected')->count() }}</span>
+                <span class="column-count">{{ $rejected_users->count() }}</span>
             </div>
-            
+
             <div class="user-cards">
-                @foreach($users->where('approval_status', 'rejected') as $user)
+                @foreach($rejected_users as $user)
                     <div class="user-card {{ $user->role === 'admin' ? 'admin-card' : '' }}">
                         <div class="user-header">
                             <div class="user-avatar-wrapper">
@@ -749,7 +749,7 @@
                                     <i class="{{ $user->role === 'admin' ? 'fas fa-crown' : 'fas fa-user' }}"></i>
                                 </div>
                             </div>
-                            
+
                             <div class="user-details">
                                 <div class="user-name">
                                     {{ $user->first_name }} {{ $user->last_name }}
@@ -765,7 +765,7 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div class="user-actions">
                             @if($user->role === 'admin')
                                 <span class="protected-label">
@@ -773,7 +773,7 @@
                                     محمي
                                 </span>
                             @else
-                                <form method="POST" action="{{ route('admin.users.delete', $user->id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم نهائيًا؟');" style="flex: 1;">
+                                <form method="POST" action="{{ route('admin.rejected.users.delete', $user->id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم نهائيًا؟');" style="flex: 1;">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-delete" title="حذف المستخدم">
@@ -786,7 +786,7 @@
                     </div>
                 @endforeach
 
-                @if($users->where('approval_status', 'rejected')->isEmpty())
+                @if($rejected_users->isEmpty())
                     <div class="empty-state">
                         <i class="fas fa-user-times"></i>
                         <p>لا توجد مستخدمين مرفوضين</p>
