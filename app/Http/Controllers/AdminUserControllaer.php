@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RejectedUsers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,8 +13,10 @@ class AdminUserControllaer extends Controller
     // =============================== Pending Users Method ==================================
     public function pendingUser(){
         $users =User::all();
-        return view('admin.pending-users', compact('users'));;
+        $rejected_users = RejectedUsers::all();
+        return view('admin.pending-users', compact('users','rejected_users'));
     }
+
     // =============================== Approve User Method ==================================
     public function approveUser($id){
         $user = User::find($id);
@@ -32,20 +35,36 @@ class AdminUserControllaer extends Controller
         if(!$user){
             return response()->json(['message'=>'User not found'],404);
         }
-        $user->approval_status = 'rejected';
-        $user->save();
+
+        RejectedUsers::create(
+            $user->only(['first_name', 'last_name', 'phone'])
+            +['rejected_at' => now(), 'reason' => $reason ?? null]
+        );
+
+        $user->delete();
         return redirect()->back()->with('success', 'User rejected successfully');
     }
 
     // =============================== Delete User Method ==================================
     public function deleteUser($id){
         $user = User::find($id);
-        if(!$user){ 
+        if(!$user){
             return response()->json(['message'=>'User not found'],404);
         }
         $user->delete();
         return redirect()->back()->with('success', 'User deleted successfully.');
     }
+
+    // =============================== Delete Reject User =========================================
+    public function deleteRejectUser($id){
+        $user = RejectedUsers::find($id);
+        if(!$user){
+            return response()->json(['message'=>'User not found'],404);
+        }
+        $user->delete();
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
     // =============================== Update User Status Method ==================================
     public function updateUserStatus(Request $request,$id){
         $request->validate([
