@@ -9,6 +9,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class MyReservationsResource extends JsonResource
 {
@@ -25,14 +26,13 @@ class MyReservationsResource extends JsonResource
         $owner_phone = User::find($property->owner_id)->phone;
         $governorate_name = Governorate::find($property->governorate_id)->name;
         $city_name = City::find($property->city_id)->name;
+        $title = Str::words($property->description, 3, '...');
         return [
             'Booking_ID' => $this->id,
             'Owner Name' => $owner_name,
             'Owner Photo' => 'storage/'.$owner_photo,
             'Owner Phone' => $owner_phone,
-            'Property_Description' => $property->description,
-            'Property_Rooms' => $property->rooms,
-            'Property_Area' => $property->area,
+            'Property_Title' => $title,
             'Location'   => $governorate_name.'/'.$city_name,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
