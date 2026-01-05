@@ -1,803 +1,932 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | User Management</title>
+    <title>LuxStay Admin | Pending Users</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
-        :root {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --success: #10b981;
-            --success-light: #34d399;
-            --danger: #ef4444;
-            --danger-light: #f87171;
-            --warning: #f59e0b;
-            --warning-light: #fbbf24;
-            --border: #334155;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        :root{
+            /* LuxStay brand */
+            --brand: #10b981;         /* emerald */
+            --brand2:#34d399;
+            --ink:#0b1220;
+            --bg:#f6f7fb;
+            --card:#ffffff;
+            --border: rgba(15, 23, 42, 0.10);
+            --text:#0f172a;
+            --muted:#64748b;
+
+            --warn:#f59e0b;
+            --ok:#10b981;
+            --bad:#ef4444;
+
+            --shadow: 0 20px 60px rgba(15,23,42,0.12);
+            --shadow-soft: 0 10px 30px rgba(15,23,42,0.08);
+            --radius: 18px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        *{ box-sizing: border-box; }
+        body{
+            margin:0;
+            font-family:"Plus Jakarta Sans", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
         }
 
-        body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            font-family: 'Inter', sans-serif;
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 20px;
+        /* Background */
+        .bg{
+            position: fixed;
+            inset:0;
+            z-index:-1;
+            background:
+                radial-gradient(900px 520px at 15% 10%, rgba(16,185,129,0.14), transparent 55%),
+                radial-gradient(900px 520px at 85% 15%, rgba(99,102,241,0.10), transparent 60%),
+                linear-gradient(180deg, #f7f8fc, #f3f5fb);
+        }
+        .grid{
+            position: fixed;
+            inset:0;
+            z-index:-1;
+            opacity:0.55;
+            background-image:
+                linear-gradient(to right, rgba(15,23,42,0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(15,23,42,0.06) 1px, transparent 1px);
+            background-size: 52px 52px;
+            mask-image: radial-gradient(circle at 50% 0%, black 55%, transparent 80%);
         }
 
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .wrap{
+            max-width: 1200px;
+            margin: 24px auto 40px;
+            padding: 0 18px;
         }
 
-        /* Header */
-        .page-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .page-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: pulse 8s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(20px, 20px); }
-        }
-
-        .page-header-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .page-title {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-
-        .page-title h1 {
-            font-size: 36px;
-            font-weight: 700;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .page-subtitle {
-            color: rgba(255,255,255,0.8);
-            font-size: 16px;
-        }
-
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.1);
+        /* Top bar */
+        .topbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:14px;
+            padding: 16px 18px;
+            border:1px solid var(--border);
+            border-radius: var(--radius);
+            background: rgba(255,255,255,0.86);
             backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: var(--shadow-soft);
+            position: sticky;
+            top: 14px;
+            z-index: 10;
         }
 
-        .stat-label {
-            color: rgba(255,255,255,0.7);
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:12px;
+            min-width: 220px;
+        }
+        .mark{
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background: linear-gradient(135deg, var(--brand), var(--brand2));
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: .6px;
+            box-shadow: 0 14px 30px rgba(16,185,129,0.22);
+            user-select:none;
+        }
+        .brand-title{
+            display:flex;
+            flex-direction:column;
+            line-height:1.15;
+        }
+        .brand-title strong{
+            font-size: 15px;
+            letter-spacing:-.2px;
+        }
+        .brand-title span{
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .page-meta{
+            display:flex;
+            flex-direction:column;
+            gap:4px;
+            flex:1;
+        }
+        .page-meta h1{
+            margin:0;
+            font-size: 16px;
+            letter-spacing:-.2px;
+        }
+        .page-meta p{
+            margin:0;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .search{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            min-width: 280px;
+        }
+        .search .field{
+            position:relative;
+            width: 100%;
+        }
+        .search input{
+            width:100%;
+            padding: 12px 40px 12px 40px;
+            border-radius: 14px;
+            border: 1px solid rgba(15,23,42,0.12);
+            background: #fff;
             font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            transition: box-shadow .18s ease, border-color .18s ease;
+        }
+        .search input:focus{
+            border-color: rgba(16,185,129,0.55);
+            box-shadow: 0 0 0 4px rgba(16,185,129,0.14);
+            outline: none;
+        }
+        .search .icon{
+            position:absolute;
+            right: 14px;
+            top:50%;
+            transform:translateY(-50%);
+            color: rgba(100,116,139,0.9);
+            font-size: 14px;
+        }
+        .search .clear{
+            position:absolute;
+            left: 10px;
+            top:50%;
+            transform:translateY(-50%);
+            border:none;
+            background: transparent;
+            cursor:pointer;
+            color: rgba(100,116,139,0.9);
+            padding: 6px 8px;
+            border-radius: 10px;
+            display:none;
+        }
+        .search .clear:hover{
+            background: rgba(15,23,42,0.06);
         }
 
-        .stat-value {
-            color: white;
-            font-size: 32px;
-            font-weight: 700;
+        @media (max-width: 980px){
+            .topbar{ flex-wrap: wrap; }
+            .search{ min-width: 100%; }
+            .brand{ min-width: auto; }
         }
 
-        /* Alert */
-        .alert-success {
-            background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
-            color: white;
-            padding: 20px 25px;
-            border-radius: 12px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
-            animation: slideDown 0.4s ease;
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .alert-success i {
-            font-size: 24px;
-        }
-
-        /* Kanban Columns */
-        .kanban-board {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        .kanban-column {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            min-height: 400px;
-        }
-
-        .column-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .column-title {
-            display: flex;
-            align-items: center;
+        /* Stats */
+        .stats{
+            display:grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
+            margin: 14px 0 18px;
+        }
+        @media (max-width: 980px){
+            .stats{ grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 460px){
+            .stats{ grid-template-columns: 1fr; }
         }
 
-        .column-title h2 {
-            font-size: 18px;
-            font-weight: 600;
+        .stat{
+            background: rgba(255,255,255,0.86);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            padding: 14px 14px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 10px;
         }
-
-        .column-icon {
+        .stat .left{
+            display:flex;
+            flex-direction:column;
+            gap:6px;
+        }
+        .stat .label{
+            font-size: 12px;
+            color: var(--muted);
+        }
+        .stat .value{
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing:-.4px;
+        }
+        .stat .badge{
             width: 40px;
             height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+            border-radius: 14px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border: 1px solid rgba(15,23,42,0.10);
+            background: #fff;
+            color: var(--text);
+        }
+        .stat.warn .badge{ color: var(--warn); }
+        .stat.ok .badge{ color: var(--ok); }
+        .stat.bad .badge{ color: var(--bad); }
+        .stat.all .badge{ color: var(--brand); }
+
+        /* Kanban */
+        .board{
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            align-items:start;
+        }
+        @media (max-width: 980px){
+            .board{ grid-template-columns: 1fr; }
         }
 
-        .column-pending .column-icon {
-            background: linear-gradient(135deg, var(--warning) 0%, var(--warning-light) 100%);
-            color: white;
-        }
-
-        .column-approved .column-icon {
-            background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
-            color: white;
-        }
-
-        .column-rejected .column-icon {
-            background: linear-gradient(135deg, var(--danger) 0%, var(--danger-light) 100%);
-            color: white;
-        }
-
-        .column-count {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-main);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        /* User Cards */
-        .user-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            min-height: 200px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding-right: 8px;
-            padding-bottom: 10px;
-        }
-
-        .user-cards::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .user-cards::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            margin: 5px 0;
-        }
-
-        .user-cards::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-            border: 2px solid var(--bg-card);
-        }
-
-        .user-cards::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
-        }
-
-        .user-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+        .col{
+            background: rgba(255,255,255,0.86);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            overflow:hidden;
         }
-
-        .user-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 4px;
-            height: 100%;
-            background: var(--primary);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .col-head{
+            padding: 14px 14px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            border-bottom: 1px solid rgba(15,23,42,0.08);
+            background: rgba(255,255,255,0.65);
         }
-
-        .user-card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        .col-title{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-weight: 800;
+            font-size: 13px;
         }
-
-        .user-card:hover::before {
-            opacity: 1;
+        .dot{
+            width:10px;
+            height:10px;
+            border-radius: 999px;
+            box-shadow: 0 0 0 4px rgba(15,23,42,0.06);
         }
+        .dot.pending{ background: var(--warn); }
+        .dot.approved{ background: var(--ok); }
+        .dot.rejected{ background: var(--bad); }
 
-        .user-card.admin-card {
-            border: 2px solid var(--primary);
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%);
-        }
-
-        .user-card.admin-card::before {
-            opacity: 1;
-        }
-
-        .user-header {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .user-avatar-wrapper {
-            position: relative;
-        }
-
-        .user-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 20px;
-            color: white;
-            border: 3px solid var(--bg-card);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .role-indicator {
-            position: absolute;
-            bottom: -2px;
-            left: -2px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            border: 2px solid var(--bg-card);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .role-indicator.admin {
-            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-            color: #78350f;
-        }
-
-        .role-indicator.user {
-            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
-            color: white;
-        }
-
-        .user-details {
-            flex: 1;
-        }
-
-        .user-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .user-id {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-muted);
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .user-phone {
-            color: var(--text-muted);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .user-phone i {
-            color: var(--primary);
-        }
-
-        .role-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            border-radius: 20px;
+        .count{
             font-size: 12px;
-            font-weight: 600;
+            color: var(--muted);
+            background: rgba(15,23,42,0.06);
+            border: 1px solid rgba(15,23,42,0.08);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-weight: 800;
+        }
+
+        .col-body{
+            padding: 12px;
+            display:grid;
+            gap: 10px;
+            min-height: 120px;
+        }
+
+        /* User card */
+        .u{
+            background: #fff;
+            border: 1px solid rgba(15,23,42,0.10);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 10px 22px rgba(15,23,42,0.06);
+            transition: transform .12s ease, box-shadow .12s ease;
+        }
+        .u:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(15,23,42,0.10);
+        }
+
+        .u-top{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 10px;
+        }
+        .u-left{
+            display:flex;
+            align-items:center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .avatar{
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            overflow:hidden;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(99,102,241,0.10));
+            border: 1px solid rgba(15,23,42,0.08);
+            color: var(--brand-ink, #064e3b);
+            font-weight: 900;
+            flex: 0 0 auto;
+        }
+        .avatar img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+        }
+
+        .who{
+            min-width: 0;
+            display:flex;
+            flex-direction:column;
+            gap: 4px;
+        }
+        .name{
+            display:flex;
+            gap: 8px;
+            align-items:baseline;
+            min-width:0;
+        }
+        .name strong{
+            font-size: 13px;
+            letter-spacing: -.2px;
+            white-space: nowrap;
+            overflow:hidden;
+            text-overflow: ellipsis;
+            max-width: 190px;
+        }
+        .id{
+            font-size: 11px;
+            color: var(--muted);
+            background: rgba(15,23,42,0.05);
+            border: 1px solid rgba(15,23,42,0.08);
+            padding: 3px 8px;
+            border-radius: 999px;
+            flex: 0 0 auto;
+        }
+        .phone{
+            font-size: 12px;
+            color: var(--muted);
+            display:flex;
+            align-items:center;
+            gap: 6px;
+        }
+        .phone i{ font-size: 12px; }
+
+        .chips{
             margin-top: 10px;
-        }
-
-        .role-badge.admin {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
-        }
-
-        .role-badge.user {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-muted);
-        }
-
-        .user-actions {
-            display: flex;
+            display:flex;
             gap: 8px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+        .chip{
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(15,23,42,0.10);
+            background: rgba(15,23,42,0.04);
+            color: rgba(15,23,42,0.85);
+            display:inline-flex;
+            align-items:center;
+            gap: 7px;
+        }
+        .chip.admin{
+            background: rgba(16,185,129,0.10);
+            border-color: rgba(16,185,129,0.25);
+            color: #065f46;
         }
 
-        .btn {
-            flex: 1;
-            border: none;
-            cursor: pointer;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .actions{
+            margin-top: 12px;
+            display:flex;
             gap: 8px;
-            font-family: 'Inter', sans-serif;
         }
 
-        .btn i {
+        .btn{
+            width: 100%;
+            border:none;
+            padding: 10px 10px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 900;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap: 8px;
+            transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+        }
+        .btn:hover{ transform: translateY(-1px); filter:saturate(1.03); }
+        .btn:active{ transform: translateY(0); }
+
+        .btn-approve{
+            background: linear-gradient(135deg, var(--brand), var(--brand2));
+            color:#fff;
+            box-shadow: 0 14px 26px rgba(16,185,129,0.20);
+        }
+        .btn-reject{
+            background: rgba(245,158,11,0.12);
+            border: 1px solid rgba(245,158,11,0.25);
+            color: #92400e;
+        }
+        .btn-delete{
+            background: rgba(239,68,68,0.10);
+            border: 1px solid rgba(239,68,68,0.22);
+            color: #991b1b;
+        }
+
+        .protected{
+            width:100%;
+            padding: 10px 10px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 900;
+            border: 1px solid rgba(15,23,42,0.10);
+            background: rgba(15,23,42,0.04);
+            color: rgba(15,23,42,0.70);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap: 8px;
+        }
+
+        .empty{
+            border: 1px dashed rgba(15,23,42,0.18);
+            border-radius: 16px;
+            padding: 18px 12px;
+            color: var(--muted);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap: 10px;
+            background: rgba(255,255,255,0.7);
+        }
+
+        /* Modal confirm */
+        .modal{
+            position: fixed;
+            inset:0;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            padding: 18px;
+            background: rgba(2,6,23,0.45);
+            z-index: 999;
+        }
+        .modal.show{ display:flex; }
+        .modal-card{
+            width: 100%;
+            max-width: 440px;
+            background: #fff;
+            border-radius: 18px;
+            border: 1px solid rgba(15,23,42,0.12);
+            box-shadow: var(--shadow);
+            padding: 16px;
+        }
+        .modal-head{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 10px;
+        }
+        .modal-head h3{
+            margin:0;
             font-size: 14px;
+            letter-spacing:-.2px;
         }
-
-        .btn-approve {
-            background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
-            color: white;
-            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+        .modal-close{
+            border:none;
+            background: rgba(15,23,42,0.06);
+            border-radius: 12px;
+            padding: 8px 10px;
+            cursor:pointer;
         }
-
-        .btn-approve:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-reject {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-reject:hover {
-            background: var(--danger);
-            color: white;
-            border-color: var(--danger);
-        }
-
-        .btn-delete {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-delete:hover {
-            background: linear-gradient(135deg, var(--danger) 0%, var(--danger-light) 100%);
-            color: white;
-            border-color: var(--danger);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-        }
-
-        .protected-label {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 16px;
-            border-radius: 8px;
+        .modal p{
+            margin: 10px 0 14px;
             font-size: 13px;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            border: 1px solid var(--border);
+            color: var(--muted);
+            line-height: 1.6;
         }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
+        .modal-actions{
+            display:flex;
+            gap: 10px;
         }
-
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.3;
+        .modal-actions .btn{
+            padding: 10px 12px;
         }
-
-        .empty-state p {
-            font-size: 16px;
-        }
-
-        @media (max-width: 768px) {
-            .kanban-board {
-                grid-template-columns: 1fr;
-            }
-
-            .page-header {
-                padding: 30px 20px;
-            }
-
-            .page-title h1 {
-                font-size: 28px;
-            }
-
-            .stats-row {
-                grid-template-columns: 1fr 1fr;
-            }
+        .btn-ghost{
+            background: rgba(15,23,42,0.06);
+            border: 1px solid rgba(15,23,42,0.10);
+            color: rgba(15,23,42,0.80);
+            box-shadow: none;
         }
     </style>
 </head>
 
 <body>
+<div class="bg"></div>
+<div class="grid"></div>
 
-<div class="dashboard-container">
+@php
+    $pendingUsers  = $users->where('approval_status', 'pending');
+    $approvedUsers = $users->where('approval_status', 'approved');
+    $rejectedUsers = $users->where('approval_status', 'rejected');
 
-    <div class="page-header">
-        <div class="page-header-content">
-            <div class="page-title">
-                <h1>
-                    <i class="fas fa-users-cog"></i>
-                    إدارة المستخدمين
-                </h1>
+    $totalUsers = $users->count();
+@endphp
+
+<div class="wrap">
+
+    <div class="topbar">
+        <div class="brand">
+            <div class="mark">LS</div>
+            <div class="brand-title">
+                <strong>LuxStay</strong>
+                <span>Admin Console</span>
             </div>
-            <p class="page-subtitle">إدارة طلبات التسجيل والمستخدمين المسجلين في النظام</p>
+        </div>
 
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="stat-label">إجمالي المستخدمين</div>
-                    <div class="stat-value">{{ count($users) }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">قيد المراجعة</div>
-                    <div class="stat-value">{{ $users->where('approval_status', 'pending')->count() }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">مقبول</div>
-                    <div class="stat-value">{{ $users->where('approval_status', 'approved')->count() }}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">مرفوض</div>
-                    <div class="stat-value">{{ $rejected_users->count() }}</div>
-                </div>
+        <div class="page-meta">
+            <h1>إدارة المستخدمين • مراجعة الطلبات</h1>
+            <p>راجع طلبات التسجيل وفعّل الحسابات أو ارفضها بشكل منظم.</p>
+        </div>
+
+        <div class="search">
+            <div class="field">
+                <button class="clear" type="button" id="clearSearch" title="مسح البحث">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <i class="fa-solid fa-magnifying-glass icon"></i>
+                <input id="searchInput" type="text" placeholder="ابحث بالاسم، الهاتف، أو #ID..." autocomplete="off">
             </div>
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="alert-success">
-            <i class="fas fa-check-circle"></i>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
-    <div class="kanban-board">
-
-        <!-- Pending Column -->
-        <div class="kanban-column column-pending">
-            <div class="column-header">
-                <div class="column-title">
-                    <div class="column-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h2>قيد المراجعة</h2>
-                </div>
-                <span class="column-count">{{ $users->where('approval_status', 'pending')->count() }}</span>
+    <div class="stats">
+        <div class="stat warn">
+            <div class="left">
+                <div class="label">طلبات جديدة (Pending)</div>
+                <div class="value" id="statPending">{{ $pendingUsers->count() }}</div>
             </div>
+            <div class="badge"><i class="fa-solid fa-hourglass-half"></i></div>
+        </div>
 
-            <div class="user-cards">
-                @foreach($users->where('approval_status', 'pending') as $user)
-                    <div class="user-card {{ $user->role === 'admin' ? 'admin-card' : '' }}">
-                        <div class="user-header">
-                            <div class="user-avatar-wrapper">
-                                <div class="user-avatar">
+        <div class="stat ok">
+            <div class="left">
+                <div class="label">أعضاء نشطين (Approved)</div>
+                <div class="value" id="statApproved">{{ $approvedUsers->count() }}</div>
+            </div>
+            <div class="badge"><i class="fa-solid fa-circle-check"></i></div>
+        </div>
+
+        <div class="stat bad">
+            <div class="left">
+                <div class="label">مرفوضين (Rejected)</div>
+                <div class="value" id="statRejected">{{ $rejectedUsers->count() }}</div>
+            </div>
+            <div class="badge"><i class="fa-solid fa-circle-xmark"></i></div>
+        </div>
+
+        <div class="stat all">
+            <div class="left">
+                <div class="label">إجمالي المستخدمين</div>
+                <div class="value" id="statAll">{{ $totalUsers }}</div>
+            </div>
+            <div class="badge"><i class="fa-solid fa-users"></i></div>
+        </div>
+    </div>
+
+    <div class="board">
+        <!-- Pending -->
+        <section class="col" aria-label="Pending users">
+            <div class="col-head">
+                <div class="col-title">
+                    <span class="dot pending"></span>
+                    طلبات التسجيل
+                </div>
+                <span class="count" id="countPending">{{ $pendingUsers->count() }}</span>
+            </div>
+            <div class="col-body" id="colPending">
+                @forelse($pendingUsers as $user)
+                    <article class="u user-item"
+                        data-search="{{ strtolower($user->first_name.' '.$user->last_name.' '.$user->phone.' #'.$user->id.' '.$user->role) }}">
+                        <div class="u-top">
+                            <div class="u-left">
+                                <div class="avatar">
                                     @if($user->avatar)
                                         <img src="{{ asset('storage/' . $user->avatar) }}" alt="User">
                                     @else
                                         {{ strtoupper(substr($user->first_name, 0, 1) . substr($user->last_name, 0, 1)) }}
                                     @endif
                                 </div>
-                                <div class="role-indicator {{ $user->role }}">
-                                    <i class="{{ $user->role === 'admin' ? 'fas fa-crown' : 'fas fa-user' }}"></i>
-                                </div>
-                            </div>
 
-                            <div class="user-details">
-                                <div class="user-name">
-                                    {{ $user->first_name }} {{ $user->last_name }}
-                                    <span class="user-id">#{{ $user->id }}</span>
+                                <div class="who">
+                                    <div class="name">
+                                        <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>
+                                        <span class="id">#{{ $user->id }}</span>
+                                    </div>
+                                    <div class="phone"><i class="fa-solid fa-phone"></i> {{ $user->phone }}</div>
                                 </div>
-                                <div class="user-phone">
-                                    <i class="fas fa-phone"></i>
-                                    {{ $user->phone }}
-                                </div>
-                                <span class="role-badge {{ $user->role }}">
-                                    <i class="{{ $user->role === 'admin' ? 'fas fa-user-shield' : 'fas fa-user-tag' }}"></i>
-                                    {{ ucfirst($user->role) }}
-                                </span>
                             </div>
                         </div>
 
-                        <div class="user-actions">
-                            <form method="POST" action="{{ route('admin.users.approve', $user->id) }}" style="flex: 1;">
+                        <div class="chips">
+                            <span class="chip {{ $user->role === 'admin' ? 'admin' : '' }}">
+                                <i class="fa-solid {{ $user->role === 'admin' ? 'fa-shield-halved' : 'fa-user' }}"></i>
+                                {{ ucfirst($user->role) }}
+                            </span>
+                            <span class="chip">
+                                <i class="fa-solid fa-hourglass-half"></i>
+                                Pending
+                            </span>
+                        </div>
+
+                        <div class="actions">
+                            <form method="POST" action="{{ route('admin.users.approve', $user->id) }}" style="flex:1;">
                                 @csrf
-                                <button class="btn btn-approve" title="قبول المستخدم">
-                                    <i class="fas fa-check"></i>
-                                    قبول
+                                <button class="btn btn-approve" type="submit" title="قبول">
+                                    <i class="fa-solid fa-check"></i> قبول
                                 </button>
                             </form>
 
-                            <form method="POST" action="{{ route('admin.users.reject', $user->id) }}" style="flex: 1;">
+                            <form method="POST" action="{{ route('admin.users.reject', $user->id) }}" style="flex:1;">
                                 @csrf
-                                <button class="btn btn-reject" title="رفض المستخدم">
-                                    <i class="fas fa-times"></i>
-                                    رفض
+                                <button class="btn btn-reject" type="submit" title="رفض">
+                                    <i class="fa-solid fa-xmark"></i> رفض
                                 </button>
                             </form>
                         </div>
+                    </article>
+                @empty
+                    <div class="empty">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <span>لا يوجد طلبات حالياً</span>
                     </div>
-                @endforeach
-
-                @if($users->where('approval_status', 'pending')->isEmpty())
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>لا توجد طلبات قيد المراجعة</p>
-                    </div>
-                @endif
+                @endforelse
             </div>
-        </div>
+        </section>
 
-        <!-- Approved Column -->
-        <div class="kanban-column column-approved">
-            <div class="column-header">
-                <div class="column-title">
-                    <div class="column-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h2>مقبول</h2>
+        <!-- Approved -->
+        <section class="col" aria-label="Approved users">
+            <div class="col-head">
+                <div class="col-title">
+                    <span class="dot approved"></span>
+                    الأعضاء النشطين
                 </div>
-                <span class="column-count">{{ $users->where('approval_status', 'approved')->count() }}</span>
+                <span class="count" id="countApproved">{{ $approvedUsers->count() }}</span>
             </div>
 
-            <div class="user-cards">
-                @foreach($users->where('approval_status', 'approved') as $user)
-                    <div class="user-card {{ $user->role === 'admin' ? 'admin-card' : '' }}">
-                        <div class="user-header">
-                            <div class="user-avatar-wrapper">
-                                <div class="user-avatar">
+            <div class="col-body" id="colApproved">
+                @forelse($approvedUsers as $user)
+                    <article class="u user-item"
+                        data-search="{{ strtolower($user->first_name.' '.$user->last_name.' '.$user->phone.' #'.$user->id.' '.$user->role) }}">
+                        <div class="u-top">
+                            <div class="u-left">
+                                <div class="avatar">
                                     @if($user->avatar)
                                         <img src="{{ asset('storage/' . $user->avatar) }}" alt="User">
                                     @else
                                         {{ strtoupper(substr($user->first_name, 0, 1) . substr($user->last_name, 0, 1)) }}
                                     @endif
                                 </div>
-                                <div class="role-indicator {{ $user->role }}">
-                                    <i class="{{ $user->role === 'admin' ? 'fas fa-crown' : 'fas fa-user' }}"></i>
-                                </div>
-                            </div>
 
-                            <div class="user-details">
-                                <div class="user-name">
-                                    {{ $user->first_name }} {{ $user->last_name }}
-                                    <span class="user-id">#{{ $user->id }}</span>
+                                <div class="who">
+                                    <div class="name">
+                                        <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>
+                                        <span class="id">#{{ $user->id }}</span>
+                                    </div>
+                                    <div class="phone"><i class="fa-solid fa-phone"></i> {{ $user->phone }}</div>
                                 </div>
-                                <div class="user-phone">
-                                    <i class="fas fa-phone"></i>
-                                    {{ $user->phone }}
-                                </div>
-                                <span class="role-badge {{ $user->role }}">
-                                    <i class="{{ $user->role === 'admin' ? 'fas fa-user-shield' : 'fas fa-user-tag' }}"></i>
-                                    {{ ucfirst($user->role) }}
-                                </span>
                             </div>
                         </div>
 
-                        <div class="user-actions">
+                        <div class="chips">
+                            <span class="chip {{ $user->role === 'admin' ? 'admin' : '' }}">
+                                <i class="fa-solid {{ $user->role === 'admin' ? 'fa-shield-halved' : 'fa-user' }}"></i>
+                                {{ ucfirst($user->role) }}
+                            </span>
+                            <span class="chip">
+                                <i class="fa-solid fa-circle-check"></i>
+                                Approved
+                            </span>
+                        </div>
+
+                        <div class="actions">
                             @if($user->role === 'admin')
-                                <span class="protected-label">
-                                    <i class="fas fa-shield-alt"></i>
-                                    محمي
-                                </span>
+                                <div class="protected">
+                                    <i class="fa-solid fa-lock"></i>
+                                    حساب محمي
+                                </div>
                             @else
-                                <form method="POST" action="{{ route('admin.users.delete', $user->id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم نهائيًا؟');" style="flex: 1;">
+                                <form method="POST" action="{{ route('admin.users.delete', $user->id) }}" style="flex:1;"
+                                      data-confirm="delete" data-username="{{ $user->first_name }} {{ $user->last_name }}" data-id="{{ $user->id }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-delete" title="حذف المستخدم">
-                                        <i class="fas fa-trash-alt"></i>
-                                        حذف
+                                    <button class="btn btn-delete" type="submit" title="حذف">
+                                        <i class="fa-solid fa-trash"></i> حذف
                                     </button>
                                 </form>
                             @endif
                         </div>
+                    </article>
+                @empty
+                    <div class="empty">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <span>القائمة فارغة</span>
                     </div>
-                @endforeach
-
-                @if($users->where('approval_status', 'approved')->isEmpty())
-                    <div class="empty-state">
-                        <i class="fas fa-user-check"></i>
-                        <p>لا توجد مستخدمين مقبولين</p>
-                    </div>
-                @endif
+                @endforelse
             </div>
-        </div>
+        </section>
 
-        <!-- Rejected Column -->
-        <div class="kanban-column column-rejected">
-            <div class="column-header">
-                <div class="column-title">
-                    <div class="column-icon">
-                        <i class="fas fa-times-circle"></i>
-                    </div>
-                    <h2>مرفوض</h2>
+        <!-- Rejected -->
+        <section class="col" aria-label="Rejected users">
+            <div class="col-head">
+                <div class="col-title">
+                    <span class="dot rejected"></span>
+                    المرفوضين
                 </div>
-                <span class="column-count">{{ $rejected_users->count() }}</span>
+                <span class="count" id="countRejected">{{ $rejectedUsers->count() }}</span>
             </div>
 
-            <div class="user-cards">
-                @foreach($rejected_users as $user)
-                    <div class="user-card {{ $user->role === 'admin' ? 'admin-card' : '' }}">
-                        <div class="user-header">
-                            <div class="user-avatar-wrapper">
-                                <div class="user-avatar">
+            <div class="col-body" id="colRejected">
+                @forelse($rejectedUsers as $user)
+                    <article class="u user-item"
+                        data-search="{{ strtolower($user->first_name.' '.$user->last_name.' '.$user->phone.' #'.$user->id.' '.$user->role) }}">
+                        <div class="u-top">
+                            <div class="u-left">
+                                <div class="avatar">
                                     @if($user->avatar)
                                         <img src="{{ asset('storage/' . $user->avatar) }}" alt="User">
                                     @else
                                         {{ strtoupper(substr($user->first_name, 0, 1) . substr($user->last_name, 0, 1)) }}
                                     @endif
                                 </div>
-                                <div class="role-indicator {{ $user->role }}">
-                                    <i class="{{ $user->role === 'admin' ? 'fas fa-crown' : 'fas fa-user' }}"></i>
-                                </div>
-                            </div>
 
-                            <div class="user-details">
-                                <div class="user-name">
-                                    {{ $user->first_name }} {{ $user->last_name }}
-                                    <span class="user-id">#{{ $user->id }}</span>
+                                <div class="who">
+                                    <div class="name">
+                                        <strong>{{ $user->first_name }} {{ $user->last_name }}</strong>
+                                        <span class="id">#{{ $user->id }}</span>
+                                    </div>
+                                    <div class="phone"><i class="fa-solid fa-phone"></i> {{ $user->phone }}</div>
                                 </div>
-                                <div class="user-phone">
-                                    <i class="fas fa-phone"></i>
-                                    {{ $user->phone }}
-                                </div>
-                                <span class="role-badge {{ $user->role }}">
-                                    <i class="{{ $user->role === 'admin' ? 'fas fa-user-shield' : 'fas fa-user-tag' }}"></i>
-                                    {{ ucfirst($user->role) }}
-                                </span>
                             </div>
                         </div>
 
-                        <div class="user-actions">
+                        <div class="chips">
+                            <span class="chip {{ $user->role === 'admin' ? 'admin' : '' }}">
+                                <i class="fa-solid {{ $user->role === 'admin' ? 'fa-shield-halved' : 'fa-user' }}"></i>
+                                {{ ucfirst($user->role) }}
+                            </span>
+                            <span class="chip">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                                Rejected
+                            </span>
+                        </div>
+
+                        <div class="actions">
                             @if($user->role === 'admin')
-                                <span class="protected-label">
-                                    <i class="fas fa-shield-alt"></i>
-                                    محمي
-                                </span>
+                                <div class="protected">
+                                    <i class="fa-solid fa-lock"></i>
+                                    حساب محمي
+                                </div>
                             @else
-                                <form method="POST" action="{{ route('admin.rejected.users.delete', $user->id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم نهائيًا؟');" style="flex: 1;">
+                                <form method="POST" action="{{ route('admin.rejected.users.delete', $user->id) }}" style="flex:1;"
+                                      data-confirm="delete" data-username="{{ $user->first_name }} {{ $user->last_name }}" data-id="{{ $user->id }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button class="btn btn-delete" title="حذف المستخدم">
-                                        <i class="fas fa-trash-alt"></i>
-                                        حذف
+                                    <button class="btn btn-delete" type="submit" title="حذف">
+                                        <i class="fa-solid fa-trash"></i> حذف نهائي
                                     </button>
                                 </form>
                             @endif
                         </div>
+                    </article>
+                @empty
+                    <div class="empty">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <span>لا يوجد مستخدمين هنا</span>
                     </div>
-                @endforeach
-
-                @if($rejected_users->isEmpty())
-                    <div class="empty-state">
-                        <i class="fas fa-user-times"></i>
-                        <p>لا توجد مستخدمين مرفوضين</p>
-                    </div>
-                @endif
+                @endforelse
             </div>
-        </div>
-
+        </section>
     </div>
 
 </div>
+
+<!-- Confirm Modal -->
+<div class="modal" id="confirmModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <div class="modal-head">
+            <h3 id="confirmTitle">تأكيد الحذف</h3>
+            <button class="modal-close" type="button" onclick="closeModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <p id="confirmText">هل أنت متأكد؟</p>
+
+        <div class="modal-actions">
+            <button class="btn btn-ghost" type="button" onclick="closeModal()">إلغاء</button>
+            <button class="btn btn-delete" type="button" id="confirmYes">
+                <i class="fa-solid fa-trash"></i> نعم، احذف
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Search (client side)
+    const input = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearch');
+
+    const pendingCountEl  = document.getElementById('countPending');
+    const approvedCountEl = document.getElementById('countApproved');
+    const rejectedCountEl = document.getElementById('countRejected');
+
+    function updateCounts() {
+        const visibleIn = (colId) => {
+            const col = document.getElementById(colId);
+            const items = col.querySelectorAll('.user-item');
+            let visible = 0;
+            items.forEach(i => { if (i.style.display !== 'none') visible++; });
+            return visible;
+        };
+        pendingCountEl.textContent  = visibleIn('colPending');
+        approvedCountEl.textContent = visibleIn('colApproved');
+        rejectedCountEl.textContent = visibleIn('colRejected');
+    }
+
+    function applySearch(q){
+        const query = (q || '').trim().toLowerCase();
+        const items = document.querySelectorAll('.user-item');
+
+        items.forEach(card => {
+            const hay = (card.getAttribute('data-search') || '');
+            card.style.display = (!query || hay.includes(query)) ? '' : 'none';
+        });
+
+        clearBtn.style.display = query ? 'block' : 'none';
+        updateCounts();
+    }
+
+    input?.addEventListener('input', (e) => applySearch(e.target.value));
+    clearBtn?.addEventListener('click', () => { input.value=''; applySearch(''); input.focus(); });
+
+    // Confirm modal for delete
+    const modal = document.getElementById('confirmModal');
+    const confirmText = document.getElementById('confirmText');
+    const confirmYes = document.getElementById('confirmYes');
+    let pendingForm = null;
+
+    function openModal(message, form){
+        pendingForm = form;
+        confirmText.textContent = message;
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+    }
+    function closeModal(){
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        pendingForm = null;
+    }
+
+    document.addEventListener('submit', function(e){
+        const form = e.target;
+        if(form && form.dataset && form.dataset.confirm === 'delete'){
+            e.preventDefault();
+            const name = form.dataset.username || 'هذا المستخدم';
+            const id = form.dataset.id || '';
+            openModal(`هل أنت متأكد من حذف ${name} ${id ? '(#'+id+')' : ''} نهائيًا؟`, form);
+        }
+    });
+
+    confirmYes?.addEventListener('click', () => {
+        if(pendingForm) pendingForm.submit();
+    });
+
+    modal?.addEventListener('click', (e) => {
+        if(e.target === modal) closeModal();
+    });
+
+    // init counts (useful if you start with search prefilled)
+    updateCounts();
+</script>
 
 </body>
 </html>
