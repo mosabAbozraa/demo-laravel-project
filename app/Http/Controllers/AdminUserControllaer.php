@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\RejectedUsers;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -26,6 +27,11 @@ class AdminUserControllaer extends Controller
         $user->approval_status = 'approved';
         $user->save();
 
+        Notification::create([
+            'user_id'   => $user->id,
+            'title'     => 'Admin response',
+            'content'   => 'Congrats :) Welcome to LuxeStay, Admin approved your request',
+        ]);
         return redirect()->back()->with('success', 'User approved successfully');
     }
 
@@ -65,6 +71,9 @@ class AdminUserControllaer extends Controller
         return redirect()->back()->with('success', 'User deleted successfully.');
     }
 
+
+
+    // =============================== Post man ===================================================
     // =============================== Update User Status Method ==================================
     public function updateUserStatus(Request $request,$id){
         $request->validate([
