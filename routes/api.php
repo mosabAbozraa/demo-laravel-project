@@ -46,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('getTenantBookings',[ReservationController::class,'tenant_bookings']);
 
     Route::get('showAllBookingsForOneProperty/{propertyId}',[ReservationController::class,'show_all_bookings_for_one_property']);
+    
+    Route::get('showAllBookingsForOnePropertyWithoutOne/{propertyId}/{withoutThisBooking_id}',[ReservationController::class,'show_all_bookings_without_one']);
 
     //=================================== Location =======================================
 
