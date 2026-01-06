@@ -33,6 +33,7 @@ class MyReservationsResource extends JsonResource
             'Owner Photo' => 'storage/'.$owner_photo,
             'Owner Phone' => $owner_phone,
             'Property Rate' => $property->average_rating,
+            'Property Id' => $this->property_id,
             'Property_Title' => $title,
             'Location'   => $governorate_name.'/'.$city_name,
             'start_date' => $this->start_date,

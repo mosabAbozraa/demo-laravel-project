@@ -168,6 +168,18 @@ class ReservationController extends Controller
         return DatePropertyBookingResource::collection($bookings);
     }
 
+    public function show_all_bookings_without_one($propertyId,$withoutThisBooking_id){
+        $property = Property::find($propertyId);
+
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
+        }
+
+        $all_without_one = Booking::where('property_id',$propertyId)
+            ->where('id', '!=', $withoutThisBooking_id)->get();
+        return DatePropertyBookingResource::collection($all_without_one);
+    }
+
 
 
 

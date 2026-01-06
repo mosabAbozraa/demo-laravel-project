@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | User Management</title>
-
+    <title>Admin Dashboard | User Grid (Dark)</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -283,6 +283,8 @@
             color: var(--text-muted);
             font-weight: 500;
         }
+        
+        .role-tag.admin-tag { color: #818cf8; font-weight: 600; }
 
         .role-tag.admin-tag { color: #818cf8; font-weight: 600; }
 
@@ -365,6 +367,7 @@
             gap: 6px;
         }
 
+        /* Empty State */
         .empty-state {
             grid-column: 1 / -1;
             text-align: center;
@@ -393,6 +396,8 @@
             animation: slideIn 0.3s ease-out;
             border: 1px solid var(--border);
         }
+        
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
@@ -547,6 +552,20 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="card-footer">
+                        
+                        @if($user->approval_status == 'pending')
+                            <form method="POST" action="{{ route('admin.users.reject', $user->id) }}" style="flex:1">
+                                @csrf
+                                <button class="btn btn-reject">Reject</button>
+                            </form>
+                            
+                            <form method="POST" action="{{ route('admin.users.approve', $user->id) }}" style="flex:1">
+                                @csrf
+                                <button class="btn btn-success">Approve</button>
+                            </form>
 
                         <div class="meta-list">
                             <div class="meta-item">
