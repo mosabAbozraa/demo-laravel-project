@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\DatePropertyBookingResource;
 use App\Http\Resources\OwnerDashboardResource;
 use App\Models\Booking;
+use App\Models\Notification;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +61,13 @@ class OwnerDashboardController extends Controller
             'current_status' => $request->bookings_status_check === 'completed' ? 'rented' : 'unrented'
         ]);
 
+        Notification::create([
+            'user_id'   => $booking->tenant_id,
+            'title'     => 'Booking status',
+            'content'   => $request->bookings_status_check === 'completed' ?
+                'Your booking has been approved from the owner' :
+                'Sorry! Your booking has been rejected from the owner',
+        ]);
         return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);
     }
 

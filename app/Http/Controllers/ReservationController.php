@@ -8,6 +8,7 @@ use App\Http\Resources\MyReservationsResource;
 use App\Http\Resources\OwnerDashboardResource;
 use App\Http\Resources\PropertyResource;
 use App\Models\Booking;
+use App\Models\Notification;
 use App\Models\Property;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Carbon;
@@ -56,10 +57,7 @@ class ReservationController extends Controller
             'booking'=>$booking,
             'total_price'=>$total_price
         ],201);
-
-
     }
-
 
     // =============================== Update Booking Method ==================================
     public function edit_booking(BookingRequest $request, $bookingId)
@@ -106,6 +104,11 @@ class ReservationController extends Controller
             'bookings_status_check' => 'pending'
         ]);
 
+        Notification::create([
+            'user_id'   => $booking->tenant_id,
+            'title'     => 'Booking status',
+            'content'   => 'Your booking has been updated successfully and waiting for Admin response',
+        ]);
         return response()->json([
             'message' => 'Booking updated and pending owner approval',
             'booking' => $booking
@@ -134,6 +137,11 @@ class ReservationController extends Controller
             'bookings_status_check' => 'canceled'
         ]);
 
+        Notification::create([
+            'user_id'   => $booking->tenant_id,
+            'title'     => 'Booking status',
+            'content'   => 'Your booking has been canceled',
+        ]);
         return response()->json(['message' => 'Booking canceled successfully'], 200);
     }
 

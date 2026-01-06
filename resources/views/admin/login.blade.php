@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Portal | Secure Access</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -92,7 +92,7 @@
         .login-card {
             width: 480px;
             /* تم تعديل التباعد ليناسب التصميم بدون الشخصيات */
-            padding: 40px 45px 50px 45px; 
+            padding: 40px 45px 50px 45px;
             background: var(--glass-bg);
             backdrop-filter: blur(40px) saturate(180%);
             -webkit-backdrop-filter: blur(40px) saturate(180%);
@@ -191,7 +191,7 @@
 
     <div class="login-container">
         <div class="login-card">
-            
+
             <div class="login-header">
                 <h1>Admin Portal</h1>
                 <p>Secure Dashboard Access</p>
@@ -245,8 +245,6 @@
             particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
             particlesContainer.appendChild(particle);
         }
-        
-    </script>
+            </script>
 </body>
 </html>
-
