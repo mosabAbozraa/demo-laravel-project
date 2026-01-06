@@ -4,6 +4,7 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\GovernorateController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OwnerDashboardController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\PropertyFavoriteController;
@@ -93,6 +94,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
     });
 
+    // ===================================== Notifications ================================
+    Route::get('notify',[NotificationController::class,'getAllNotifications']);
 });
 
 // =================================== Public Routes ===================================
