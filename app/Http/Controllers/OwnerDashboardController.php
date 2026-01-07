@@ -67,6 +67,8 @@ class OwnerDashboardController extends Controller
             'content'   => $request->bookings_status_check === 'completed' ?
                 'Your booking has been approved from the owner' :
                 'Sorry! Your booking has been rejected from the owner',
+            'is_seen'   => false 
+   
         ]);
         return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);
     }

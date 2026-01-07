@@ -31,6 +31,7 @@ class AdminUserControllaer extends Controller
             'user_id'   => $user->id,
             'title'     => 'Admin response',
             'content'   => 'Congrats :) Welcome to LuxeStay, Admin approved your request',
+            'is_seen'   => false 
         ]);
         return redirect()->back()->with('success', 'User approved successfully');
     }

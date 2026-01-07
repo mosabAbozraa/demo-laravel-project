@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | User Grid (Dark)</title>
+    <title>Admin Dashboard | User Management</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -202,7 +202,7 @@
         .user-card.status-approved .status-strip { background-color: var(--success); box-shadow: 0 0 10px var(--success); }
         .user-card.status-rejected .status-strip { background-color: var(--danger); }
         .user-card.status-pending .status-strip { background-color: var(--warning); }
-
+        
         .user-card.is-admin {
             border: 1px solid #6366f1;
             background: linear-gradient(to bottom right, #252526, #1e1b4b); /* LTR Gradient Direction */
@@ -255,7 +255,7 @@
         .avatar {
             width: 60px;
             height: 60px;
-            border-radius: 18px;
+            border-radius: 18px; 
             object-fit: cover;
             background: #2d2d30;
             color: var(--primary);
@@ -284,8 +284,6 @@
             font-weight: 500;
         }
         
-        .role-tag.admin-tag { color: #818cf8; font-weight: 600; }
-
         .role-tag.admin-tag { color: #818cf8; font-weight: 600; }
 
         .meta-list {
@@ -334,25 +332,25 @@
         .btn-success { background: #059669; color: white; }
         .btn-success:hover { background: #047857; }
 
-        .btn-danger-outline {
-            background: transparent;
-            border: 1px solid #7f1d1d;
-            color: #f87171;
+        .btn-danger-outline { 
+            background: transparent; 
+            border: 1px solid #7f1d1d; 
+            color: #f87171; 
         }
-        .btn-danger-outline:hover {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: #ef4444;
+        .btn-danger-outline:hover { 
+            background: rgba(239, 68, 68, 0.1); 
+            border-color: #ef4444; 
         }
 
-        .btn-reject {
-            background: transparent;
-            border: 1px solid #52525b;
-            color: var(--text-muted);
+        .btn-reject { 
+            background: transparent; 
+            border: 1px solid #52525b; 
+            color: var(--text-muted); 
         }
-        .btn-reject:hover {
-            background: rgba(255,255,255,0.05);
-            color: #e4e4e7;
-            border-color: #71717a;
+        .btn-reject:hover { 
+            background: rgba(210, 11, 11, 0.05); 
+            color: #db0b62ff; 
+            border-color: #d71717ff; 
         }
 
         .locked-badge {
@@ -367,7 +365,6 @@
             gap: 6px;
         }
 
-        /* Empty State */
         .empty-state {
             grid-column: 1 / -1;
             text-align: center;
@@ -399,8 +396,6 @@
         
         @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
         @media (max-width: 640px) {
             .users-grid { grid-template-columns: 1fr; }
             .page-header { flex-direction: column; align-items: start; gap: 15px; }
@@ -423,7 +418,7 @@
     @endif
 
     <div class="dashboard-container">
-
+        
         <div class="page-header">
             <div class="page-title">
                 <h1>User Management</h1>
@@ -431,12 +426,12 @@
             </div>
 
             <div class="actions-toolbar">
-
+                
                 <div class="input-group">
                     <i class="fas fa-search search-icon"></i>
-                    <input
+                    <input 
                         id="userSearch"
-                        type="text"
+                        type="text" 
                         class="search-input"
                         placeholder="Search for user..."
                         autocomplete="off"
@@ -458,14 +453,14 @@
         </div>
 
         <div class="users-grid">
-
+            
             {{-- LOGIC PART 1: PENDING USERS (Keeping Logic of Code 2) --}}
             @foreach($users->where('approval_status', 'pending') as $user)
                 <div class="user-card status-pending {{ $user->role === 'admin' ? 'is-admin' : '' }}"
                     data-name="{{ strtolower($user->first_name . ' ' . $user->last_name . ' ' . $user->phone) }}"
                     data-status="pending"
                     data-role="{{ $user->role }}">
-
+                    
                     <div class="status-strip"></div>
 
                     <div class="card-body">
@@ -509,7 +504,7 @@
                             @csrf
                             <button class="btn btn-reject">Reject</button>
                         </form>
-
+                        
                         <form method="POST" action="{{ route('admin.users.approve', $user->id) }}" style="flex:1">
                             @csrf
                             <button class="btn btn-success">Approve</button>
@@ -524,7 +519,7 @@
                     data-name="{{ strtolower($user->first_name . ' ' . $user->last_name . ' ' . $user->phone) }}"
                     data-status="approved"
                     data-role="{{ $user->role }}">
-
+                    
                     <div class="status-strip"></div>
 
                     <div class="card-body">
@@ -552,20 +547,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="card-footer">
-                        
-                        @if($user->approval_status == 'pending')
-                            <form method="POST" action="{{ route('admin.users.reject', $user->id) }}" style="flex:1">
-                                @csrf
-                                <button class="btn btn-reject">Reject</button>
-                            </form>
-                            
-                            <form method="POST" action="{{ route('admin.users.approve', $user->id) }}" style="flex:1">
-                                @csrf
-                                <button class="btn btn-success">Approve</button>
-                            </form>
 
                         <div class="meta-list">
                             <div class="meta-item">
@@ -601,7 +582,7 @@
                     data-name="{{ strtolower($user->first_name . ' ' . $user->last_name . ' ' . $user->phone) }}"
                     data-status="rejected"
                     data-role="{{ $user->role }}">
-
+                    
                     <div class="status-strip"></div>
 
                     <div class="card-body">
