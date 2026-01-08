@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\LoginResource;
+use App\Models\RejectedUsers;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -31,6 +32,12 @@ class UserController extends Controller
     // =============================== Login Method ==================================
     public function login(LoginRequest $request)
     {
+        $isRejected = RejectedUsers::where('phone',$request->phone)->first();
+        if ($isRejected) {
+            return response()->json([
+                'message' => 'Your account request has been rejected'
+            ], 403);
+        }
         if (!Auth::attempt($request->only('phone', 'password'))) {
             return response()->json([
             'message' => 'Wrong phone number or password'
@@ -38,18 +45,13 @@ class UserController extends Controller
         }
 
     $user = User::where('phone', $request->phone)->first();
-
     if ($user->approval_status === 'pending') {
         return response()->json([
             'message' => 'Pending.... Your account is waiting for admin approval'
         ], 403);
     }
 
-    if ($user->approval_status === 'rejected') {
-        return response()->json([
-            'message' => 'Your account request has been rejected'
-        ], 403);
-    }
+
 
     // $token = $user->createToken('auth_token')->plainTextToken;
 

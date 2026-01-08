@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+
 class OwnerDashboardResource extends JsonResource
 {
     /**
@@ -16,11 +18,15 @@ class OwnerDashboardResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $description =Property::find($this->property_id)->description;
+        $title =  Str::words($description, 3, '...');
         return [
+            'booking_id' => $this->id,
             'tenant_name' => User::find($this->tenant_id)->first_name,
             'tenant_phone' => User::find($this->tenant_id)->phone,
             'tenant_avatar' => User::find($this->tenant_id)->avatar,
-            'property_description' => Property::find($this->property_id)->description,
+            'property_description' =>$description ,
+            'title '=> $title,
             'number_of_days' => Carbon::parse($this->start_date)->diffInDays(Carbon::parse($this->end_date)),
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,

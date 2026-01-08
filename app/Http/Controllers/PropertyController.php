@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddPropertyRequest;
 use App\Http\Requests\PropertyFilterSearch;
 use App\Http\Resources\PropertyResource;
+use App\Models\City;
+use App\Models\Governorate;
 use App\Models\Property;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,13 +15,26 @@ class PropertyController extends Controller
 {
     // ============================== Add Property Method ==================================
     public function add_property_to_owner(AddPropertyRequest $request){
-        $user = Auth::user();
-        if($user->role === 'tenant'){
-            $user->update(['role'=>'owner']);
-        }
-        $validatedData = $request->validated();
-        $validatedData['owner_id'] = $user->id;
-        $property = Property::create($validatedData);
+      $user = Auth::user();
+    if($user->role === 'tenant'){
+        $user->update(['role'=>'owner']);
+    }
+    $validatedData = $request->validated();
+
+    $governorate = Governorate::where('name', $request->governorate)->first();
+    
+    $city = City::where('name', $request->city)
+                ->where('governorate_id', $governorate->id)
+                ->first();
+
+    unset($validatedData['governorate']);
+    unset($validatedData['city']);
+    
+    $validatedData['governorate_id'] = $governorate->id;
+    $validatedData['city_id'] = $city->id;
+    $validatedData['owner_id'] = $user->id;
+
+    $property = Property::create($validatedData);
 
         foreach ($request->file('images') as $image){
             $path = $image->store('property_images','public');

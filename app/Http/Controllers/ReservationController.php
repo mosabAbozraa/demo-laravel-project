@@ -8,6 +8,7 @@ use App\Http\Resources\MyReservationsResource;
 use App\Http\Resources\OwnerDashboardResource;
 use App\Http\Resources\PropertyResource;
 use App\Models\Booking;
+use App\Models\Notification;
 use App\Models\Property;
 use Illuminate\Http\Request;
 // use Illuminate\Support\Carbon;
@@ -18,6 +19,7 @@ use App\Models\User;
 
 class ReservationController extends Controller
 {
+
 
     // =============================== Booking Method ==================================
     public function booking(BookingRequest $request, $propertyId){
@@ -55,10 +57,7 @@ class ReservationController extends Controller
             'booking'=>$booking,
             'total_price'=>$total_price
         ],201);
-
-
     }
-
 
     // =============================== Update Booking Method ==================================
     public function edit_booking(BookingRequest $request, $bookingId)
@@ -105,6 +104,11 @@ class ReservationController extends Controller
             'bookings_status_check' => 'pending'
         ]);
 
+        Notification::create([
+            'user_id'   => $booking->tenant_id,
+            'title'     => 'Booking status',
+            'content'   => 'Your booking has been updated successfully and waiting for Admin response',
+        ]);
         return response()->json([
             'message' => 'Booking updated and pending owner approval',
             'booking' => $booking
@@ -133,6 +137,11 @@ class ReservationController extends Controller
             'bookings_status_check' => 'canceled'
         ]);
 
+        Notification::create([
+            'user_id'   => $booking->tenant_id,
+            'title'     => 'Booking status',
+            'content'   => 'Your booking has been canceled',
+        ]);
         return response()->json(['message' => 'Booking canceled successfully'], 200);
     }
 
@@ -143,6 +152,8 @@ class ReservationController extends Controller
         $bookings = Booking::where('tenant_id', $user->id)->with('property')->get();
         return MyReservationsResource::collection($bookings);
     }
+
+        // ============================== Show All Bookings For One Property Method ==================================
 
     public function show_all_bookings_for_one_property($propertyId)
     {
@@ -157,56 +168,19 @@ class ReservationController extends Controller
         return DatePropertyBookingResource::collection($bookings);
     }
 
-    // =============================== Owner Management Method ==================================
+    public function show_all_bookings_without_one($propertyId,$withoutThisBooking_id){
+        $property = Property::find($propertyId);
 
-    // ================================Booking Requests Method================================================
-    public function booking_requests()
-    {
-        $user = Auth::user();
-        if($user->role === 'tenant'){
-            return response()->json('you are tenant, Owners only', 403);
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
         }
-        $bookings = Booking::whereHas('property', function ($query) use ($user) {
-        $query->where('owner_id', $user->id);
-        })
-         // here we should added resource for the output---> لك مو تكرم عينك كم مصعب عنا لحنا
-         ->get();
 
-         return OwnerDashboardResource::collection($bookings);
+        $all_without_one = Booking::where('property_id',$propertyId)
+            ->where('id', '!=', $withoutThisBooking_id)->get();
+        return DatePropertyBookingResource::collection($all_without_one);
     }
 
-    // =============================== Update Booking Request Status Method ==================================
-    public function update_booking_status(Request $request, $bookingId)
-    {
-        $user = Auth::user();
-        $request->validate([
-            'bookings_status_check' => 'required|in:completed,canceled'
-        ]);
 
-        $booking = Booking::find($bookingId);
 
-        if (!$booking) {
-            return response()->json(['message' => 'Booking not found'], 404);
-        }
 
-        $property = $booking->property;
-        if ($property->owner_id !== $user->id) {
-            return response()->json(['message' => 'Unauthorized action'], 403);
-        }
-
-        if ($booking->bookings_status_check !== 'pending') {// التحقق  اذا كان المالك نازل يجدبها لما لا
-            return response()->json(['message' => 'Only pending bookings can be updated ,صاحيلك لاتجدبها'], 400);
-        }
-
-        $booking->update([
-            'bookings_status_check' => $request->bookings_status_check
-        ]);
-
-        //لك مصعب كأن مالها داعي يكون للعقار حالة لان انا من الخرج عرفت انه الو حالة مالنا مستخدمينها ابدا
-        $property->update([
-            'current_status' => $request->bookings_status_check === 'completed' ? 'rented' : 'unrented'
-        ]);
-
-        return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);
-    }
 }
