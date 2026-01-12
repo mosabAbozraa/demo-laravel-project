@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Booking;
+use App\Models\Property;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,11 +17,31 @@ class NotificationsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            'tenant id' => $this->user_id,
+
+        if($this->title === 'Admin response')
+        {
+        $senderName = 'Admin';
+         return [
+            'sender' => $senderName,
+            'avatar' => null,
             'title'     => $this->title,
-            'conent'    => $this->content,
+            'content'    => $this->content,
+            'status'    => $this->is_seen
+         ];
+        }
+        $tenet = User::find($this->user_id);
+
+        $book = Booking::where('tenant_id', $tenet->id)->get()->first();
+        $owner_name = $book->property->owner->first_name.' '.$book->property->owner->last_name;
+        $owner_photo = $book->property->owner->avatar;
+
+        return [
+            'sender' => $owner_name,
+            'avatar' => $owner_photo,
+            'title'     => $this->title,
+            'content'    => $this->content,
             'status'    => $this->is_seen
         ];
     }
+
 }

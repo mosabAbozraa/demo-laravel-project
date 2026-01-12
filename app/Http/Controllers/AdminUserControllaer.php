@@ -29,7 +29,7 @@ class AdminUserControllaer extends Controller
 
         Notification::create([
             'user_id'   => $user->id,
-            'title'     => 'Admin response',
+            'title'     => 'Admin Response',
             'content'   => 'Congrats :) Welcome to LuxeStay, Admin approved your request',
             'is_seen'   => false 
         ]);

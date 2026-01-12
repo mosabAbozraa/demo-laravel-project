@@ -63,7 +63,7 @@ class OwnerDashboardController extends Controller
 
         Notification::create([
             'user_id'   => $booking->tenant_id,
-            'title'     => 'Booking status',
+            'title'     => 'Your Booking Status',
             'content'   => $request->bookings_status_check === 'completed' ?
                 'Your booking has been approved from the owner' :
                 'Sorry! Your booking has been rejected from the owner',
