@@ -29,9 +29,7 @@ class NotificationsResource extends JsonResource
             'status'    => $this->is_seen
          ];
         }
-        $tenet = User::find($this->user_id);
-
-        $book = Booking::where('tenant_id', $tenet->id)->get()->first();
+        $book = Booking::find($this->booking_id);
         $owner_name = $book->property->owner->first_name.' '.$book->property->owner->last_name;
         $owner_photo = $book->property->owner->avatar;
 

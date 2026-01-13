@@ -149,7 +149,7 @@ class ReservationController extends Controller
     public function tenant_bookings()
     {
         $user = Auth::user();
-        $bookings = Booking::where('tenant_id', $user->id)->with('property')->get();
+        $bookings = Booking::where('tenant_id', $user->id)->with('property')->orderBy('created_at','desc')->get();
         return MyReservationsResource::collection($bookings);
     }
 
