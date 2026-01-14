@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ConversationDetailsResource;
+use App\Http\Resources\MyConversationsResource;
 use App\Models\Conversation;
 use App\Models\Property;
 use Illuminate\Http\Request;
@@ -50,32 +51,37 @@ class ConversationController extends Controller
     public function myConversations()
     {
         $user = Auth::user();
-
-        $conversations = Conversation::where('tenant_id', $user->id)->orWhere('owner_id', $user->id)->with(['property' => function($q){
-                $q->select('id','price_per_night','owner_id');
-            }])
-            ->with(['messages' => function($q){
-                $q->latest()->limit(1);
-            }])
+        $conversations = Conversation::where('tenant_id', $user->id)
+            ->orWhere('owner_id', $user->id)
             ->latest('updated_at')
-            ->get()
-            ->map(function($conv){
-                $lastMsg = $conv->messages->first();
-                return [
-                    'id' => $conv->id,
-                    'property' => $conv->property,
-                    'tenant_id' => $conv->tenant_id,
-                    'owner_id' => $conv->owner_id,
-                    'last_message' => $lastMsg ? [
-                        'contents' => $lastMsg->contents,
-                        'sender_id' => $lastMsg->sender_id,
-                        'created_at' => $lastMsg->created_at,
-                    ] : null,
-                    'updated_at' => $conv->updated_at,
-                ];
-            });
+            ->get();
 
-        return response()->json(['conversations' => $conversations], 200);
+        return MyConversationsResource::collection($conversations);
+
+        // $conversations = Conversation::where('tenant_id', $user->id)->orWhere('owner_id', $user->id)->with(['property' => function($q){
+        //         $q->select('id','price_per_night','owner_id');
+        //     }])
+        //     ->with(['messages' => function($q){
+        //         $q->latest()->limit(1);
+        //     }])
+        //     ->latest('updated_at')
+        //     ->get()
+        //     ->map(function($conv){
+        //         $lastMsg = $conv->messages->first();
+        //         return [
+        //             'id' => $conv->id,
+        //             'property' => $conv->property,
+        //             'tenant_id' => $conv->tenant_id,
+        //             'owner_id' => $conv->owner_id,
+        //             'last_message' => $lastMsg ? [
+        //                 'contents' => $lastMsg->contents,
+        //                 'sender_id' => $lastMsg->sender_id,
+        //                 'created_at' => $lastMsg->created_at,
+        //             ] : null,
+        //             'updated_at' => $conv->updated_at,
+        //         ];
+        //     });
+
     }
 
     ////////////////////////////////////// Conversation Details /////////////////////////////
@@ -97,9 +103,6 @@ class ConversationController extends Controller
         if (!in_array($user->id, [$conv->tenant_id, $conv->owner_id])) {
             return response()->json(['message'=>'Forbidden: you are not participant of this conversation'], 403);
         }
-
-                // $messages = $conv->messages()->get();
-
         return new ConversationDetailsResource($conv);
         
     }
