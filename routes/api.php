@@ -87,6 +87,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
         Route::get('/my', [ConversationController::class, 'myConversations']);
 
+        Route::get('/details', [ConversationController::class, 'getConversationDetails']);
+
      });
     Route::prefix('messages')->group(function(){
 

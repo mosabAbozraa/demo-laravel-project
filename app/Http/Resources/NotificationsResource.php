@@ -20,15 +20,31 @@ class NotificationsResource extends JsonResource
 
         if($this->title === 'Admin response')
         {
-        $senderName = 'Admin';
-         return [
+            $senderName = 'Admin';
+            return [
             'sender' => $senderName,
             'avatar' => null,
             'title'     => $this->title,
             'content'    => $this->content,
             'status'    => $this->is_seen
-         ];
-        }
+            ];
+         } //  else if ($this->title === 'Chat Message')
+        //     {
+        //         $book = Booking::find($this->booking_id);
+
+        //         if($this->user_id == $book->property->owner_id)
+        //         {
+        //             $senderName = $book->tenant->first_name.' '.$book->property->owner->last_name;
+        //             $avatar = $book->tenant->avatar;
+        //             return [
+        //             'sender' => $senderName,
+        //             'avatar' => $avatar,
+        //             'title'     => $this->title,
+        //             'content'    => $this->content,
+        //             'status'    => $this->is_seen
+        //             ];
+        //         }
+            
         $book = Booking::find($this->booking_id);
         $owner_name = $book->property->owner->first_name.' '.$book->property->owner->last_name;
         $owner_photo = $book->property->owner->avatar;

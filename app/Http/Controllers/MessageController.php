@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {
-    //
+    //////////////////////////////// Send Message /////////////////////////////
         public function send(SendMessageRequest $request)
     {
         $user = Auth::user();
@@ -37,7 +37,7 @@ class MessageController extends Controller
 
         return response()->json(['message' => $message], 201);
     }
-
+    //////////////////////////////// Fetch Messages /////////////////////////////
      public function fetchMessages(Request $request)
     {
         $user = Auth::user();
