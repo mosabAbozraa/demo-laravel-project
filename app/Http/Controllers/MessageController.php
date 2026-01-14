@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SendMessageRequest;
 use App\Http\Resources\MessagesResource;
+use App\Models\Booking;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,8 +34,22 @@ class MessageController extends Controller
             'sender_id' => $user->id,
             'contents' => $data['contents'],
         ]);
-
         $conv->touch();// هاد بحدث التواريخ تبع المحادثة لحتى يطلع باول القائمة
+
+        $booking = Booking::where('property_id', $conv->property_id)->where('tenant_id', $conv->tenant_id)->latest()->first();
+        if($user->id === $conv->owner_id){
+            $receiver_Id = $conv->tenant_id;
+        } else {
+            $receiver_Id = $conv->owner_id;
+        }
+        Notification::create([
+            'user_id' => $receiver_Id,
+            'booking_id' => $booking ? $booking->id : null,
+            'title' => 'Chat Message',
+            'content' => 'You have a new message : '.$message->contents,
+            'is_seen' => false,
+        ]);
+
 
         return response()->json(['message' => $message], 201);
     }

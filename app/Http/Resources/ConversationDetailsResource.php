@@ -40,9 +40,6 @@ class ConversationDetailsResource extends JsonResource
             'sender avatar' => $senderAvatar,
             'receiver name' => $receiverName,
             'receiver avatar' => $receiverAvatar,
-            // 'isMe' => $this->sender_id === $request->user()->id, 
-            // 'contents' => $this->contents,
-            'sent at' => $this->created_at->format('Y-m-d H:i:s'),
             'Property information' => [
                 'image' => 'storage/' . $propertyImage,
                 'title' => $title,

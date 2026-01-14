@@ -49,7 +49,7 @@ class OwnerDashboardController extends Controller
         }
 
         if ($booking->bookings_status_check !== 'pending') {// التحقق  اذا كان المالك نازل يجدبها لما لا
-            return response()->json(['message' => 'Only pending bookings can be updated ,صاحيلك لاتجدبها'], 400);
+            return response()->json(['message' => 'Only pending bookings can be updated ,صاحيلكٍ'], 400);
         }
 
         $booking->update([
