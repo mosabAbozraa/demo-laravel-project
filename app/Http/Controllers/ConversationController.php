@@ -58,30 +58,6 @@ class ConversationController extends Controller
 
         return MyConversationsResource::collection($conversations);
 
-        // $conversations = Conversation::where('tenant_id', $user->id)->orWhere('owner_id', $user->id)->with(['property' => function($q){
-        //         $q->select('id','price_per_night','owner_id');
-        //     }])
-        //     ->with(['messages' => function($q){
-        //         $q->latest()->limit(1);
-        //     }])
-        //     ->latest('updated_at')
-        //     ->get()
-        //     ->map(function($conv){
-        //         $lastMsg = $conv->messages->first();
-        //         return [
-        //             'id' => $conv->id,
-        //             'property' => $conv->property,
-        //             'tenant_id' => $conv->tenant_id,
-        //             'owner_id' => $conv->owner_id,
-        //             'last_message' => $lastMsg ? [
-        //                 'contents' => $lastMsg->contents,
-        //                 'sender_id' => $lastMsg->sender_id,
-        //                 'created_at' => $lastMsg->created_at,
-        //             ] : null,
-        //             'updated_at' => $conv->updated_at,
-        //         ];
-        //     });
-
     }
 
     ////////////////////////////////////// Conversation Details /////////////////////////////
@@ -94,7 +70,7 @@ class ConversationController extends Controller
         ]);
         $conversation_id = $validated['conversation_id'];
 
-        $conv = Conversation::find($conversation_id)->with('property')->first();
+        $conv = Conversation::where('id', $conversation_id)->first();
 
         if (!$conv) {
             return response()->json(['message'=>'Conversation not found'], 404);
