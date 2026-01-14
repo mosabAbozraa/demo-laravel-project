@@ -60,13 +60,16 @@ class NotificationsResource extends JsonResource
             }elseif($this->user_id === $book->property->owner_id){
                 $senderName = $book->tenant->first_name.' '.$book->tenant->last_name;
                 $avatar = $book->tenant->avatar;
+                $conversation_id = Conversation::where('tenant_id', $book->tenant_id)
+                                        ->where('property_id', $book->property_id)
+                                        ->first()->id;
                 return [
                 'sender' => $senderName,
                 'avatar' => $avatar,
                 'title'     => $this->title,
                 'content'    => $this->content,
                 'status'    => $this->is_seen,
-                'conversation_id' => $book->conversations()->where('tenant_id', $book->tenant_id)->where('property_id', $book->property_id)->first()->id
+                'conversation_id' => $conversation_id
 
                 ];
             }
