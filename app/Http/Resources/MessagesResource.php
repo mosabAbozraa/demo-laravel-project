@@ -15,12 +15,13 @@ class MessagesResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $firstName = User::find($this->sender_id)->first_name;
+
         return [
-            'Message ID' => $this->id,
-            'sender name' => $firstName,
+  
             'contents' => $this->contents,
-            'sent at' => $this->created_at->format('Y-m-d H:i:s'),
+            'isMe' => $this->sender_id === $request->user()->id, 
+            'sent at' => $this->created_at->format('h:i:s'),
+
         ];
     }
 }

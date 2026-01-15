@@ -49,7 +49,7 @@ class OwnerDashboardController extends Controller
         }
 
         if ($booking->bookings_status_check !== 'pending') {// التحقق  اذا كان المالك نازل يجدبها لما لا
-            return response()->json(['message' => 'Only pending bookings can be updated ,صاحيلك لاتجدبها'], 400);
+            return response()->json(['message' => 'Only pending bookings can be updated ,صاحيلكٍ'], 400);
         }
 
         $booking->update([
@@ -63,12 +63,12 @@ class OwnerDashboardController extends Controller
 
         Notification::create([
             'user_id'   => $booking->tenant_id,
-            'title'     => 'Booking status',
+            'title'     => 'Your Booking Status',
             'content'   => $request->bookings_status_check === 'completed' ?
                 'Your booking has been approved from the owner' :
                 'Sorry! Your booking has been rejected from the owner',
-            'is_seen'   => false 
-   
+            'is_seen'   => false,
+            'booking_id' => $booking->id
         ]);
         return response()->json(['message' => 'Booking status updated successfully', 'booking' => $booking], 200);
     }

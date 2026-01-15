@@ -87,6 +87,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
         Route::get('/my', [ConversationController::class, 'myConversations']);
 
+        Route::get('/details', [ConversationController::class, 'getConversationDetails']);
+
      });
     Route::prefix('messages')->group(function(){
 
@@ -98,6 +100,7 @@ Route::middleware('auth:sanctum')->group(function(){
 
     // ===================================== Notifications ================================
     Route::get('notify',[NotificationController::class,'getAllNotifications']);
+    Route::get('notify/updateStatus',[NotificationController::class,'updateNotificationsStatus']); 
 });
 
 // =================================== Public Routes ===================================
