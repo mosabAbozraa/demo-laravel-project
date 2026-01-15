@@ -102,7 +102,7 @@ class PropertyController extends Controller
 
         // $booking = $property->tenants()->where('tenant_id',$user->user_id)->first();
         $booking = Booking::where('property_id',$property->id)->where('tenant_id',$user->id);
-        $booking->update(['booking_rate'=>$totalRating]);
+        $booking->update(['booking_rate'=>$newRating]);
 
         return response()->json(['message' => 'Rating submitted successfully', 'property rate' => $property->average_rating],201);
 
