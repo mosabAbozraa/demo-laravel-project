@@ -8,6 +8,7 @@ use App\Http\Resources\PropertyResource;
 use App\Models\City;
 use App\Models\Governorate;
 use App\Models\Property;
+use GuzzleHttp\Handler\Proxy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,14 +23,14 @@ class PropertyController extends Controller
     $validatedData = $request->validated();
 
     $governorate = Governorate::where('name', $request->governorate)->first();
-    
+
     $city = City::where('name', $request->city)
                 ->where('governorate_id', $governorate->id)
                 ->first();
 
     unset($validatedData['governorate']);
     unset($validatedData['city']);
-    
+
     $validatedData['governorate_id'] = $governorate->id;
     $validatedData['city_id'] = $city->id;
     $validatedData['owner_id'] = $user->id;
@@ -87,17 +88,21 @@ class PropertyController extends Controller
         $request->validate([
             'rating' => 'required|integer|min:1|max:5'
         ]);
-
+        $user=Auth::user();
         $property = Property::find($propertyId);
         if(!$property){
             return response()->json('Property not found',404);
         }
 
         $newRating = $request->rating;
-        $totalRating = ($property->average_rating*$property->number_of_ratings + $newRating)/($property->number_of_ratings+1);
-        $property->average_rating = $this->roundToHalf($totalRating);
+        $totalRating = ($property->average_rating*$property->number_of_ratings + $newRating)/($property->number_of_ratings+1);            $property->average_rating = $this->roundToHalf($totalRating);
         $property->number_of_ratings += 1;
         $property->save();
+
+        $booking = $property->bookins()->where('tenant_id',$user->user_id)->first();
+        $booking->update(['booking_rate'=>$totalRating]);
+
         return response()->json(['message' => 'Rating submitted successfully', 'property rate' => $property->average_rating],201);
+
     }
 }

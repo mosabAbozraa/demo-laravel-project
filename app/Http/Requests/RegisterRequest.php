@@ -26,15 +26,15 @@ class RegisterRequest extends FormRequest
         return [
             'first_name'        => 'required|string|max:255',
             'last_name'         => 'required|string|max:255',
-            'phone'             => 'required|string|unique:users,phone',
+            'phone'             => 'required|string|unique:users,phone|min:10|max:10',
             'password' => [
             'required',
-            'string'
-            // Password::min(8)
-            //     ->letters()
-            //     ->mixedCase()
-            //     ->numbers()
-            //     ->symbols(),
+            'string',
+            Password::min(8)
+                ->letters()
+                ->mixedCase()
+                ->numbers()
+                ->symbols(),
             // 'confirmed'
         ],
             'avatar'            => 'required|image|mimes:jpeg,png,jpg,gif|max:5120', // 5 MB

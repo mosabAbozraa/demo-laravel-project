@@ -39,6 +39,7 @@ class MyReservationsResource extends JsonResource
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'number_of_days' => Carbon::parse($this->start_date)->diffInDays(Carbon::parse($this->end_date)),
+            'booking_rate'  => $this->booking_rate,
             'booking_price' => $this->booking_price,
             'bookings_status_check' => $this->bookings_status_check,
         ];
