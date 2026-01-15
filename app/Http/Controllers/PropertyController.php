@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddPropertyRequest;
 use App\Http\Requests\PropertyFilterSearch;
 use App\Http\Resources\PropertyResource;
+use App\Models\Booking;
 use App\Models\City;
 use App\Models\Governorate;
 use App\Models\Property;
@@ -99,7 +100,8 @@ class PropertyController extends Controller
         $property->number_of_ratings += 1;
         $property->save();
 
-        $booking = $property->bookins()->where('tenant_id',$user->user_id)->first();
+        // $booking = $property->tenants()->where('tenant_id',$user->user_id)->first();
+        $booking = Booking::where('property_id',$property->id)->where('tenant_id',$user->id);
         $booking->update(['booking_rate'=>$totalRating]);
 
         return response()->json(['message' => 'Rating submitted successfully', 'property rate' => $property->average_rating],201);
