@@ -20,12 +20,12 @@ class NotificationsResource extends JsonResource
     {
 
         //////////////////////////First type of notification: Admin Response//////////////////////////
-        if($this->title === 'Admin response')
+        if($this->title === 'Admin Response')
         {
             $senderName = 'Admin';
             return [
             'sender' => $senderName,
-            'avatar' => null,
+            'avatar' => "Unknown",
             'title'     => $this->title,
             'content'    => $this->content,
             'status'    => $this->is_seen
@@ -36,7 +36,7 @@ class NotificationsResource extends JsonResource
             $book = Booking::find($this->booking_id);if(!$book){
                 return [
                     'sender' => 'Unknown',
-                    'avatar' => null,
+                    'avatar' => "null",
                     'title'     => $this->title,
                     'content'    => $this->content,
                     'status'    => $this->is_seen

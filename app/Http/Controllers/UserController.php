@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\LoginResource;
+use App\Http\Resources\ProfileResource;
 use App\Models\RejectedUsers;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -64,5 +65,10 @@ class UserController extends Controller
             return response()->json(['message'=>'logout successful'],200);
     }
 
+    // =============================== Get User Profile ==================================
+    public function get_user_profile(){
+        $user = Auth::user();
+        return new ProfileResource($user);
+    }
 
 }

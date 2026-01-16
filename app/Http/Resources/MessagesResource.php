@@ -20,7 +20,7 @@ class MessagesResource extends JsonResource
   
             'contents' => $this->contents,
             'isMe' => $this->sender_id === $request->user()->id, 
-            'sent at' => $this->created_at->format('h:i:s'),
+            'sent at' => $this->created_at->format('h:i A, d M Y'),
 
         ];
     }

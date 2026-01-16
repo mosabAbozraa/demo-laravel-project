@@ -34,7 +34,7 @@ class MessageController extends Controller
             'sender_id' => $user->id,
             'contents' => $data['contents'],
         ]);
-        $conv->touch();// هاد بحدث التواريخ تبع المحادثة لحتى يطلع باول القائمة
+        $conv->touch();
 
         $booking = Booking::where('property_id', $conv->property_id)->where('tenant_id', $conv->tenant_id)->latest()->first();
         if($user->id === $conv->owner_id){

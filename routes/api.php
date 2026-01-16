@@ -112,3 +112,5 @@ Route::post('register',[UserController::class,'register']);
 Route::post('login',[UserController::class,'login']);
 
 Route::post('logout',[UserController::class,'logout'])->middleware('auth:sanctum');
+
+Route::get('get/user/profile',[UserController::class,'get_user_profile'])->middleware('auth:sanctum');
