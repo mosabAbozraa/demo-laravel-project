@@ -81,7 +81,7 @@ class ReservationController extends Controller
 
 
         $hasConflict = Booking::where('property_id', $booking->property_id)
-            ->where('id', '!=', $booking->id) //  هون عم نتحقق انه ما يقارن مع نفس الحجز
+            ->where('id', '!=', $booking->id) 
             ->whereIn('bookings_status_check', ['pending', 'completed'])
             ->where(function ($query) use ($validatedData) {
                 $query->where('start_date', '<', $validatedData['end_date'])
@@ -179,6 +179,20 @@ class ReservationController extends Controller
             ->where('id', '!=', $withoutThisBooking_id)->get();
         return DatePropertyBookingResource::collection($all_without_one);
     }
+
+    // =============================== Check Date of Booking (is finished) ==================================
+    public function check_date_of_booking(){
+        $currentDate = Carbon::now()->toDateString();
+        $bookings = Booking::where('end_date','<',$currentDate)
+            ->whereIn('bookings_status_check',['completed'])
+            ->get();
+
+        foreach($bookings as $booking){
+            $booking->update([
+                'bookings_status_check' => 'finished'
+            ]);
+        }
+    } 
 
 
 

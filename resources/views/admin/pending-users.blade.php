@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- 1. CSS Variables form First Code (Warm Dark Theme) --- */
         :root {
             --bg-body: #191919;
             --bg-card: #252526;
@@ -44,7 +43,6 @@
             padding: 0 24px;
         }
 
-        /* --- Header Section --- */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -68,7 +66,6 @@
             font-size: 15px;
         }
 
-        /* --- Toolbar (Search & Filter) --- */
         .actions-toolbar {
             display: flex;
             gap: 16px;
@@ -96,10 +93,9 @@
             border-color: #52525b;
         }
 
-        /* LTR Specific Adjustments for Search */
         .search-icon {
             position: absolute;
-            left: 14px; /* LTR: Moved to left */
+            left: 14px; 
             right: auto;
             color: var(--text-muted);
             font-size: 14px;
@@ -111,12 +107,12 @@
             border: none;
             outline: none;
             color: var(--text-main);
-            padding: 0 16px 0 40px; /* LTR: Padding swapped */
+            padding: 0 16px 0 40px;
             width: 240px;
             font-size: 14px;
             height: 100%;
             font-family: inherit;
-            text-align: left; /* LTR */
+            text-align: left; 
         }
 
         .search-input::placeholder {
@@ -136,7 +132,7 @@
             border: none;
             outline: none;
             color: var(--text-main);
-            padding: 0 40px 0 16px; /* LTR: Padding swapped */
+            padding: 0 40px 0 16px;
             width: 100%;
             height: 100%;
             font-size: 14px;
@@ -152,7 +148,7 @@
 
         .select-arrow {
             position: absolute;
-            right: 14px; /* LTR: Moved to right */
+            right: 14px; 
             left: auto;
             top: 50%;
             transform: translateY(-50%);
@@ -167,14 +163,12 @@
             color: var(--primary);
         }
 
-        /* --- Grid Layout --- */
         .users-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 24px;
         }
 
-        /* --- Card Component --- */
         .user-card {
             background: var(--bg-card);
             border-radius: var(--radius);
@@ -377,11 +371,11 @@
         .floating-alert {
             position: fixed;
             top: 20px;
-            right: 20px; /* LTR: Alert on right */
+            right: 20px; 
             left: auto;
             background: #27272a;
             padding: 16px 24px;
-            border-left: 4px solid var(--success); /* LTR: Border Left */
+            border-left: 4px solid var(--success);
             border-right: none;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border-radius: 8px;
@@ -513,7 +507,6 @@
                 </div>
             @endforeach
 
-            {{-- LOGIC PART 2: APPROVED USERS (Keeping Logic of Code 2) --}}
             @foreach($users->where('approval_status', 'approved') as $user)
                 <div class="user-card status-approved {{ $user->role === 'admin' ? 'is-admin' : '' }}"
                     data-name="{{ strtolower($user->first_name . ' ' . $user->last_name . ' ' . $user->phone) }}"

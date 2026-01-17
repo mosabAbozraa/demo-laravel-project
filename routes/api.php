@@ -100,7 +100,8 @@ Route::middleware('auth:sanctum')->group(function(){
 
     // ===================================== Notifications ================================
     Route::get('notify',[NotificationController::class,'getAllNotifications']);
-    Route::get('notify/updateStatus',[NotificationController::class,'updateNotificationsStatus']); 
+    Route::get('notify/updateStatus',[NotificationController::class,'updateNotificationsStatus']);
+    Route::get('notify/countUnseen',[NotificationController::class,'countUnseenNotifications']); 
 });
 
 // =================================== Public Routes ===================================

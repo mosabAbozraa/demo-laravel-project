@@ -40,7 +40,6 @@
             position: relative;
         }
 
-        /* --- خلفية متحركة --- */
         .animated-bg {
             position: fixed;
             top: 0;
@@ -83,7 +82,6 @@
             100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
         }
 
-        /* --- البطاقة الرئيسية --- */
         .login-container {
             position: relative;
             z-index: 10;
@@ -91,7 +89,6 @@
 
         .login-card {
             width: 480px;
-            /* تم تعديل التباعد ليناسب التصميم بدون الشخصيات */
             padding: 40px 45px 50px 45px;
             background: var(--glass-bg);
             backdrop-filter: blur(40px) saturate(180%);
@@ -124,7 +121,6 @@
             font-size: 14px;
         }
 
-        /* حقول الإدخال */
         .input-group { position: relative; margin-bottom: 25px; }
         .input-label {
             display: block; color: var(--text-secondary); font-size: 12px;
@@ -147,14 +143,12 @@
         }
         .input-group input:focus + .input-icon { color: #667eea; }
 
-        /* تصحيح الـ Autofill */
         input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
             -webkit-box-shadow: 0 0 0 50px rgba(10, 14, 39, 0.9) inset !important;
             -webkit-text-fill-color: var(--text-primary) !important;
             border-color: rgba(255, 255, 255, 0.08) !important;
         }
 
-        /* زر الدخول */
         .login-button {
             width: 100%; padding: 16px; margin-top: 5px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -235,7 +229,6 @@
     </div>
 
     <script>
-        // --- إعداد الجزيئات الخلفية ---
         const particlesContainer = document.getElementById('particles');
         for (let i = 0; i < 30; i++) {
             const particle = document.createElement('div');
