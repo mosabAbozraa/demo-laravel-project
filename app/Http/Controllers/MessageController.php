@@ -46,7 +46,7 @@ class MessageController extends Controller
             'user_id' => $receiver_Id,
             'booking_id' => $booking ? $booking->id : null,
             'title' => 'Chat Message',
-            'content' => 'You have a new message : '.$message->contents,
+            'content' => $message->contents,
             'is_seen' => false,
         ]);
 
